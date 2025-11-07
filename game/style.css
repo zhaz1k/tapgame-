@@ -1,6 +1,6 @@
 body {
   font-family: 'Press Start 2P', monospace;
-  background: #89c07a url('raw.githubusercontent.com/zhaz1k/tapgame-/main/photo_2025-11-07_20-32-53.jpg');
+  background: url('https://raw.githubusercontent.com/zhaz1k/tapgame-/main/photo_2025-11-07_20-32-53.jpg');
   color: #333;
   display: flex;
   justify-content: center;
