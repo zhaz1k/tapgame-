@@ -1,7 +1,8 @@
 body {
   font-family: 'Press Start 2P', monospace;
-  background: url('https://raw.githubusercontent.com/zhaz1k/tapgame-/main/photo_2025-11-07_20-32-53.jpg');
-  color: #333;
+  background: #89c07a url('https://raw.githubusercontent.com/zhaz1k/tapgame-/main/photo_2025-11-07_20-32-53.jpg');
+  background-size: cover;
+  color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -9,8 +10,33 @@ body {
   margin: 0;
 }
 
-.container {
+#menu {
   text-align: center;
+}
+
+button {
+  font-family: 'Press Start 2P';
+  background: #6b8e23;
+  color: white;
+  border: 4px solid #3e5c14;
+  padding: 15px;
+  margin: 10px;
+  cursor: pointer;
+  image-rendering: pixelated;
+  box-shadow: 4px 4px #2e4010;
+  transition: all 0.1s ease;
+}
+
+button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px #2e4010;
+}
+
+#game {
+  text-align: center;
+  position: relative;
+  width: 100%;
+  height: 100vh;
 }
 
 #block {
@@ -18,7 +44,11 @@ body {
   height: 100px;
   background: url('https://raw.githubusercontent.com/zhaz1k/tapgame-/main/IMG_0267.PNG');
   background-size: cover;
-  margin: 20px auto;
-  cursor: pointer;
   image-rendering: pixelated;
+  margin: 0 auto;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
 }
