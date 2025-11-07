@@ -12,7 +12,7 @@ bot.onText(/\/start/, (msg) => {
         [
           {
             text: "⛏️ Грати зараз",
-            web_app: { url: "https://tapgame-phi.vercel.app" } // посилання на гру (Vercel)
+            web_app: { url: "https://tapgame-8jxk.vercel.app/" } // посилання на гру (Vercel)
           }
         ]
       ],
