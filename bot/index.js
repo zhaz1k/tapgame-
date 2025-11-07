@@ -20,7 +20,7 @@ bot.onText(/\/start/, (msg) => {
             {
               text: "⛏️ Грати зараз",
               web_app: {
-                url: "https://tapgame-8jxk-git-main-zhans-projects-01dc4f83.vercel.app/" // 🔹 твоє актуальне посилання на Vercel
+                url: "https://tapgame-8jxk.vercel.app/" // 🔹 твоє актуальне посилання на Vercel
               }
             }
           ],
