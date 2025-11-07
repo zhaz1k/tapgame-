@@ -1,0 +1,24 @@
+body {
+  font-family: 'Press Start 2P', monospace;
+  background: #89c07a url('https://i.imgur.com/I0Ff5lp.png');
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  text-align: center;
+}
+
+#block {
+  width: 100px;
+  height: 100px;
+  background: url('https://i.imgur.com/iz5s2uG.png');
+  background-size: cover;
+  margin: 20px auto;
+  cursor: pointer;
+  image-rendering: pixelated;
+}
