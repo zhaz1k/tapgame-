@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 
 // 🔹 встав сюди токен з BotFather
-const TOKEN = "ВАШ_НОВИЙ_ТОКЕН";
+const TOKEN = "8531820317:AAGcDEkMeNqOqs8ivJtG92MNcO6_jmyFRrc";
 
 const bot = new TelegramBot(TOKEN, { polling: true });
 
