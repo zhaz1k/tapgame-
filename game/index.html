@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Minecraft Tap Game</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
-    <h1>⛏️ Tap Block!</h1>
-    <div id="block"></div>
+  <div id="menu">
+    <h1>⛏️ Minecraft Tap Game</h1>
+    <button id="playBtn">🎮 Грати</button>
+    <button id="statsBtn">🏆 Рейтинг</button>
+    <button id="settingsBtn">⚙️ Налаштування</button>
+  </div>
+
+  <div id="game" style="display: none;">
     <p>Очки: <span id="score">0</span></p>
+    <div id="block"></div>
   </div>
 
   <script src="script.js"></script>
