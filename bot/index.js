@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 
-// 🔹 твій токен із BotFather
-const TOKEN = "8531820317:AAGcDEkMeNqOqs8ivJtG92MNcO6_jmyFRrc";
+// 🔹 встав сюди токен з BotFather
+const TOKEN = "ВАШ_НОВИЙ_ТОКЕН";
 
 const bot = new TelegramBot(TOKEN, { polling: true });
 
@@ -20,7 +20,7 @@ bot.onText(/\/start/, (msg) => {
             {
               text: "⛏️ Грати зараз",
               web_app: {
-                url: "tapgame-8jxk.vercel.app" // 🔹 актуальне посилання на Vercel
+                url: "https://tapgame-8jxk-git-main-zhans-projects-01dc4f83.vercel.app/" // 🔹 твоє актуальне посилання на Vercel
               }
             }
           ],
@@ -47,7 +47,6 @@ bot.on("message", (msg) => {
     );
   }
 
-  // 🔹 кнопка “Рейтинг”
   if (text === "🏆 Рейтинг") {
     bot.sendMessage(
       chatId,
@@ -60,5 +59,4 @@ bot.on("message", (msg) => {
   }
 });
 
-// 🔹 повідомлення при запуску
 console.log("✅ Tap Game Bot запущено і готово до гри!");
