@@ -283,4 +283,17 @@ body::before {
     opacity: 0;
   }
 }
+/* 🔴 Ефект пульсації енергії при <10% */
+@keyframes pulseEnergy {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(255, 0, 0, 1);
+  }
+}
+
+.low-energy {
+  animation: pulseEnergy 1s infinite;
+}
 
