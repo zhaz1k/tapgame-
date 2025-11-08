@@ -44,6 +44,25 @@ if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
 }
 
 // ------------------------------
+// 💾 Збереження / Завантаження
+// ------------------------------
+function saveGame() {
+  const data = { coins, xp, level, energy };
+  localStorage.setItem("tapgame_save", JSON.stringify(data));
+}
+
+function loadGame() {
+  const saved = localStorage.getItem("tapgame_save");
+  if (saved) {
+    const data = JSON.parse(saved);
+    coins = data.coins || 0;
+    xp = data.xp || 0;
+    level = data.level || 1;
+    energy = data.energy || maxEnergy;
+  }
+}
+
+// ------------------------------
 // 🔹 Оновлення енергії
 // ------------------------------
 function updateEnergy(animated = false) {
@@ -75,7 +94,7 @@ function updateEnergy(animated = false) {
     }
   }
 
-  // Деактивація кнопки без енергії
+  // Кнопка активна лише якщо є енергія
   tapButton.disabled = energy <= 0;
   tapButton.style.opacity = energy <= 0 ? "0.5" : "1";
   tapButton.style.cursor = energy <= 0 ? "not-allowed" : "pointer";
@@ -93,10 +112,11 @@ function updateXP(amount = 1) {
 
   xpDisplay.textContent = `${xp}`;
   levelDisplay.textContent = `${level}`;
+  saveGame();
 }
 
 // ------------------------------
-// 🔹 Ефект монетки при кліку
+// 🔹 Ефект монетки
 // ------------------------------
 function spawnCoin() {
   const coin = document.createElement('div');
@@ -112,7 +132,7 @@ function spawnCoin() {
 }
 
 // ------------------------------
-// ⚡ Ефект блискавки при +енергії
+// ⚡ Блискавка при +енергії
 // ------------------------------
 function spawnFlash() {
   const flash = document.createElement('div');
@@ -127,7 +147,7 @@ function spawnFlash() {
 }
 
 // ------------------------------
-// 🔸 Подія натискання TAP
+// 🔸 TAP натискання
 // ------------------------------
 tapButton.addEventListener('click', () => {
   if (energy <= 0) return;
@@ -138,6 +158,7 @@ tapButton.addEventListener('click', () => {
   if (profileCoins) profileCoins.textContent = coins;
   updateEnergy(true);
   spawnCoin();
+  saveGame();
 });
 
 // ------------------------------
@@ -149,6 +170,7 @@ setInterval(() => {
     if (energy > maxEnergy) energy = maxEnergy;
     updateEnergy(true);
     spawnFlash();
+    saveGame();
   }
 }, regenInterval);
 
@@ -170,5 +192,8 @@ buttons.forEach(btn => {
 // ------------------------------
 // 🔹 Ініціалізація
 // ------------------------------
+loadGame();
 updateEnergy();
 updateXP(0);
+coinsDisplay.textContent = coins;
+if (profileCoins) profileCoins.textContent = coins;
