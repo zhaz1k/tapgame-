@@ -251,3 +251,6 @@ setInterval(() => {
   renderXP();
   updateEnergy();
 })();
+console.log("✅ TapGame JS запущено");
+alert("TapGame запущено!");
+
