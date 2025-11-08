@@ -9,6 +9,8 @@ const regenInterval = 2000;
 let xp = 0;
 let level = 1;
 
+let currentUserId = "guest"; // Telegram ID або "guest"
+
 // ------------------------------
 // 🔹 Елементи DOM
 // ------------------------------
@@ -20,46 +22,63 @@ const energyLabel = document.getElementById("energy-label");
 const xpDisplay = document.getElementById("xp");
 const levelDisplay = document.getElementById("level");
 
-// 🧩 Telegram-профіль
+// Telegram-профіль
 const usernameEl = document.getElementById("username");
 const photoEl = document.getElementById("userPhoto");
 const userIdEl = document.getElementById("userId");
 
 // ------------------------------
-// 🧩 Telegram WebApp інтеграція
+// 🧩 Telegram інтеграція
 // ------------------------------
 const tg = window.Telegram?.WebApp;
 if (tg && tg.initDataUnsafe?.user) {
   const user = tg.initDataUnsafe.user;
+  currentUserId = user.id || "guest";
 
   if (usernameEl)
     usernameEl.textContent =
       user.username ? `@${user.username}` : user.first_name || "Користувач";
 
-  if (photoEl && user.photo_url) {
-    photoEl.src = user.photo_url;
-  }
-
+  if (photoEl && user.photo_url) photoEl.src = user.photo_url;
   if (userIdEl) userIdEl.textContent = `ID: ${user.id}`;
+} else {
+  // fallback якщо відкрито поза Telegram
+  if (usernameEl) usernameEl.textContent = "Гість";
+  if (userIdEl) userIdEl.textContent = "ID: offline";
 }
 
 // ------------------------------
-// 💾 Локальне збереження
+// 💾 Збереження / Завантаження (для кожного користувача)
 // ------------------------------
+function getSaveKey() {
+  return `tapgame_save_${currentUserId}`;
+}
+
+function getTimeKey() {
+  return `tapgame_last_update_${currentUserId}`;
+}
+
 function saveGame() {
   const data = { coins, xp, level, energy };
-  localStorage.setItem("tapgame_save", JSON.stringify(data));
-  localStorage.setItem("tapgame_last_update", Date.now().toString());
+  localStorage.setItem(getSaveKey(), JSON.stringify(data));
+  localStorage.setItem(getTimeKey(), Date.now().toString());
 }
 
 function loadGame() {
-  const saved = localStorage.getItem("tapgame_save");
+  const saved = localStorage.getItem(getSaveKey());
   if (saved) {
-    const data = JSON.parse(saved);
-    coins = data.coins ?? 0;
-    xp = data.xp ?? 0;
-    level = data.level ?? 1;
-    energy = data.energy ?? maxEnergy;
+    try {
+      const data = JSON.parse(saved);
+      coins = data.coins ?? 0;
+      xp = data.xp ?? 0;
+      level = data.level ?? 1;
+      energy = data.energy ?? maxEnergy;
+    } catch {
+      coins = 0;
+      xp = 0;
+      level = 1;
+      energy = maxEnergy;
+    }
   }
 }
 
@@ -67,7 +86,7 @@ function loadGame() {
 // ⏰ Відновлення енергії офлайн
 // ------------------------------
 function restoreEnergyAfterPause() {
-  const lastSave = localStorage.getItem("tapgame_last_update");
+  const lastSave = localStorage.getItem(getTimeKey());
   if (!lastSave) return;
   const diff = Date.now() - parseInt(lastSave, 10);
   const gained = Math.floor(diff / regenInterval) * regenRate;
@@ -83,6 +102,7 @@ function renderCoins() {
   if (coinsDisplay) coinsDisplay.textContent = coins;
   if (profileCoins) profileCoins.textContent = coins;
 }
+
 function renderXP() {
   if (xpDisplay) xpDisplay.textContent = xp;
   if (levelDisplay) levelDisplay.textContent = level;
@@ -138,7 +158,7 @@ function addXP(amount = 1) {
 }
 
 // ------------------------------
-// 🔹 Анімації
+// 🔹 Ефекти
 // ------------------------------
 function spawnCoin() {
   const coin = document.createElement("div");
