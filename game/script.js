@@ -9,14 +9,6 @@ const regenInterval = 2000;
 let xp = 0;
 let level = 1;
 
-let currentUserId = "guest"; // Telegram ID або "guest"
-
-if (window.Telegram?.WebApp) {
-  window.Telegram.WebApp.ready(); // повідомляє Telegram, що додаток завантажився
-  console.log("✅ Telegram WebApp ініціалізовано");
-}
-
-
 // ------------------------------
 // 🔹 Елементи DOM
 // ------------------------------
@@ -27,64 +19,65 @@ const energyBar = document.getElementById("energy-bar");
 const energyLabel = document.getElementById("energy-label");
 const xpDisplay = document.getElementById("xp");
 const levelDisplay = document.getElementById("level");
-
-// Telegram-профіль
 const usernameEl = document.getElementById("username");
 const photoEl = document.getElementById("userPhoto");
 const userIdEl = document.getElementById("userId");
 
 // ------------------------------
-// 🧩 Telegram інтеграція
+// 🧩 Telegram WebApp інтеграція
 // ------------------------------
 const tg = window.Telegram?.WebApp;
-if (tg && tg.initDataUnsafe?.user) {
-  const user = tg.initDataUnsafe.user;
-  currentUserId = user.id || "guest";
+if (tg) {
+  tg.ready(); // активація WebApp API
+  console.log("✅ Telegram WebApp готовий");
 
-  if (usernameEl)
-    usernameEl.textContent =
-      user.username ? `@${user.username}` : user.first_name || "Користувач";
+  const user = tg.initDataUnsafe?.user;
+  if (user) {
+    // якщо Telegram передає дані
+    if (usernameEl)
+      usernameEl.textContent =
+        user.username ? `@${user.username}` : user.first_name || "Користувач";
 
-  if (photoEl && user.photo_url) photoEl.src = user.photo_url;
-  if (userIdEl) userIdEl.textContent = `ID: ${user.id}`;
+    if (photoEl && user.photo_url) photoEl.src = user.photo_url;
+    if (userIdEl) userIdEl.textContent = `ID: ${user.id}`;
+
+    // зберігаємо ID користувача, щоб прив’язати прогрес
+    localStorage.setItem("tapgame_user_id", user.id);
+  } else {
+    // fallback для браузера / тесту
+    if (usernameEl) usernameEl.textContent = "Гість";
+    if (photoEl)
+      photoEl.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+  }
 } else {
-  // fallback якщо відкрито поза Telegram
+  console.log("⚠️ Telegram WebApp не знайдено — гра у браузері.");
   if (usernameEl) usernameEl.textContent = "Гість";
-  if (userIdEl) userIdEl.textContent = "ID: offline";
+  if (photoEl)
+    photoEl.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 }
 
 // ------------------------------
-// 💾 Збереження / Завантаження (для кожного користувача)
+// 💾 Локальне збереження (прив’язане до user.id)
 // ------------------------------
 function getSaveKey() {
-  return `tapgame_save_${currentUserId}`;
-}
-
-function getTimeKey() {
-  return `tapgame_last_update_${currentUserId}`;
+  const uid = localStorage.getItem("tapgame_user_id") || "guest";
+  return `tapgame_save_${uid}`;
 }
 
 function saveGame() {
   const data = { coins, xp, level, energy };
   localStorage.setItem(getSaveKey(), JSON.stringify(data));
-  localStorage.setItem(getTimeKey(), Date.now().toString());
+  localStorage.setItem("tapgame_last_update", Date.now().toString());
 }
 
 function loadGame() {
   const saved = localStorage.getItem(getSaveKey());
   if (saved) {
-    try {
-      const data = JSON.parse(saved);
-      coins = data.coins ?? 0;
-      xp = data.xp ?? 0;
-      level = data.level ?? 1;
-      energy = data.energy ?? maxEnergy;
-    } catch {
-      coins = 0;
-      xp = 0;
-      level = 1;
-      energy = maxEnergy;
-    }
+    const data = JSON.parse(saved);
+    coins = data.coins ?? 0;
+    xp = data.xp ?? 0;
+    level = data.level ?? 1;
+    energy = data.energy ?? maxEnergy;
   }
 }
 
@@ -92,7 +85,7 @@ function loadGame() {
 // ⏰ Відновлення енергії офлайн
 // ------------------------------
 function restoreEnergyAfterPause() {
-  const lastSave = localStorage.getItem(getTimeKey());
+  const lastSave = localStorage.getItem("tapgame_last_update");
   if (!lastSave) return;
   const diff = Date.now() - parseInt(lastSave, 10);
   const gained = Math.floor(diff / regenInterval) * regenRate;
@@ -108,14 +101,13 @@ function renderCoins() {
   if (coinsDisplay) coinsDisplay.textContent = coins;
   if (profileCoins) profileCoins.textContent = coins;
 }
-
 function renderXP() {
   if (xpDisplay) xpDisplay.textContent = xp;
   if (levelDisplay) levelDisplay.textContent = level;
 }
 
 // ------------------------------
-// 🔹 Енергія
+// ⚡ Енергія
 // ------------------------------
 function updateEnergy(animated = false) {
   energy = Math.max(0, Math.min(maxEnergy, Math.floor(energy)));
@@ -133,14 +125,11 @@ function updateEnergy(animated = false) {
 
   if (energyBar) {
     if (percent > 70)
-      energyBar.style.background =
-        "linear-gradient(90deg, #00f6ff, #00ff99)";
+      energyBar.style.background = "linear-gradient(90deg, #00f6ff, #00ff99)";
     else if (percent > 30)
-      energyBar.style.background =
-        "linear-gradient(90deg, #f6ff00, #ffaa00)";
+      energyBar.style.background = "linear-gradient(90deg, #f6ff00, #ffaa00)";
     else
-      energyBar.style.background =
-        "linear-gradient(90deg, #ff5f5f, #ff0000)";
+      energyBar.style.background = "linear-gradient(90deg, #ff5f5f, #ff0000)";
   }
 
   if (tapButton) {
@@ -151,7 +140,7 @@ function updateEnergy(animated = false) {
 }
 
 // ------------------------------
-// 🔹 XP
+// 🎮 XP
 // ------------------------------
 function addXP(amount = 1) {
   xp += amount;
@@ -164,7 +153,7 @@ function addXP(amount = 1) {
 }
 
 // ------------------------------
-// 🔹 Ефекти
+// ✨ Анімації
 // ------------------------------
 function spawnCoin() {
   const coin = document.createElement("div");
