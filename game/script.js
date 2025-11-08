@@ -88,3 +88,24 @@ buttons.forEach(btn => {
 
 // 🔹 Ініціалізація
 updateEnergy();
+
+// 🔹 Створює коротку анімацію блискавки при +енергії
+function spawnFlash() {
+  const flash = document.createElement('div');
+  flash.classList.add('energy-flash');
+  flash.textContent = '⚡ +1';
+  document.body.appendChild(flash);
+
+  setTimeout(() => flash.remove(), 1200);
+}
+
+// 🔹 Автоматичне відновлення енергії
+setInterval(() => {
+  if (energy < maxEnergy) {
+    energy += regenRate;
+    if (energy > maxEnergy) energy = maxEnergy;
+    updateEnergy();
+    spawnFlash(); // ⚡ додаємо ефект блискавки
+  }
+}, regenInterval);
+
