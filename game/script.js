@@ -1,8 +1,8 @@
 let coins = 0;
-let energy = 500;          // Початкова енергія
-const maxEnergy = 500;     // Максимальна енергія
-const regenRate = 1;       // Скільки енергії відновлюється
-const regenInterval = 2000; // 1 енергія кожні 2 секунди
+let energy = 500;            // Поточна енергія
+const maxEnergy = 500;       // Максимальна енергія
+const regenRate = 1;         // Відновлення енергії
+const regenInterval = 2000;  // +1 енергія кожні 2 секунди
 
 // 🔹 Елементи
 const tapButton = document.getElementById('tapButton');
@@ -10,35 +10,24 @@ const coinsDisplay = document.getElementById('coins');
 const profileCoins = document.getElementById('profileCoins');
 const energyBar = document.getElementById('energy-bar');
 const energyText = document.getElementById('energy-text');
-const timerDisplay = document.getElementById('timer');
 
-// 🔹 Функція оновлення енергії
+// 🔹 Оновлення прогрес-бару енергії
 function updateEnergy() {
   const percent = (energy / maxEnergy) * 100;
   energyBar.style.width = `${percent}%`;
-  energyText.textContent = `${energy}/${maxEnergy}`;
+  energyText.textContent = `${energy}/${maxEnergy} ⚡`;
 }
 
-// 🔹 Відновлення енергії з таймером
+// 🔹 Автоматичне відновлення енергії
 setInterval(() => {
   if (energy < maxEnergy) {
     energy += regenRate;
+    if (energy > maxEnergy) energy = maxEnergy;
     updateEnergy();
   }
 }, regenInterval);
 
-// 🔹 Форматований таймер
-function startTimer() {
-  let seconds = regenInterval / 1000;
-  setInterval(() => {
-    seconds--;
-    if (seconds <= 0) seconds = regenInterval / 1000;
-    timerDisplay.textContent = `⚡ +${regenRate} через ${seconds}s`;
-  }, 1000);
-}
-startTimer();
-
-// 🔹 Функція появи монетки при кліку
+// 🔹 Ефект появи монетки
 function spawnCoin() {
   const coin = document.createElement('div');
   coin.classList.add('coin');
@@ -53,9 +42,9 @@ function spawnCoin() {
   setTimeout(() => coin.remove(), 1200);
 }
 
-// 🔸 Натискання TAP
+// 🔸 Подія натискання TAP
 tapButton.addEventListener('click', () => {
-  if (energy <= 0) return; // якщо енергія закінчилась — не рахує кліки
+  if (energy <= 0) return; // якщо енергії нема — не працює
   coins++;
   energy--;
   coinsDisplay.textContent = coins;
@@ -72,7 +61,6 @@ buttons.forEach(btn => {
   btn.addEventListener('click', () => {
     buttons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-
     screens.forEach(s => s.classList.remove('active'));
     document.getElementById(btn.dataset.screen).classList.add('active');
   });
