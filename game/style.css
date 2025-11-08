@@ -239,3 +239,33 @@ body::before {
   font-weight: 500;
   text-shadow: 0 0 3px #00f6ff;
 }
+
+/* ⚡ Анімація блискавки при відновленні енергії */
+.energy-flash {
+  position: fixed;
+  bottom: 100px;
+  left: 50px;
+  font-size: 1rem;
+  color: #00f6ff;
+  text-shadow: 0 0 6px #00ffff, 0 0 12px #0077ff;
+  opacity: 0;
+  animation: flashUp 1.2s ease-out forwards;
+  pointer-events: none;
+  z-index: 30;
+}
+
+@keyframes flashUp {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(-15px);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-25px);
+    opacity: 0;
+  }
+}
+
