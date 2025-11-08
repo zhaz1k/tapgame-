@@ -1,48 +1,64 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TapGame</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
   <div class="app">
-    <!-- Головний екран -->
+
+    <!-- 🏠 Головна -->
     <div class="screen active" id="home">
       <h1 class="balance">💰 <span id="coins">0</span></h1>
-      <button id="tapButton">Tap</button>
+      <button id="tapButton">TAP</button>
     </div>
 
-    <!-- Завдання -->
+    <!-- 🎯 Завдання -->
     <div class="screen" id="tasks">
       <h2>🎯 Завдання</h2>
       <ul class="task-list">
         <li>Підписатись на Telegram <button class="claim">Отримати</button></li>
         <li>Запросити друга <button class="claim">Отримати</button></li>
+        <li>Поставити лайк у Twitter <button class="claim">Отримати</button></li>
       </ul>
     </div>
 
-    <!-- Airdrop -->
+    <!-- 🚀 Airdrop -->
     <div class="screen" id="airdrop">
       <h2>🚀 Airdrop</h2>
       <p>Незабаром...</p>
     </div>
 
-    <!-- Профіль -->
+    <!-- 👤 Профіль -->
     <div class="screen" id="profile">
       <h2>👤 Профіль</h2>
       <p>Ваш баланс: <span id="profileCoins">0</span> монет</p>
+      <p>Рівень: <span id="level">1</span></p>
     </div>
 
-    <!-- Нижнє меню -->
+    <!-- 🧭 Нижнє меню -->
     <nav class="bottom-nav">
-      <button data-screen="home" class="active"><i class="bi bi-house"></i></button>
-      <button data-screen="tasks"><i class="bi bi-list-task"></i></button>
-      <button data-screen="airdrop"><i class="bi bi-rocket-takeoff"></i></button>
-      <button data-screen="profile"><i class="bi bi-person"></i></button>
+      <button data-screen="home" class="active">
+        <i class="bi bi-house"></i>
+        <span>Home</span>
+      </button>
+      <button data-screen="tasks">
+        <i class="bi bi-list-task"></i>
+        <span>Tasks</span>
+      </button>
+      <button data-screen="airdrop">
+        <i class="bi bi-rocket-takeoff"></i>
+        <span>Airdrop</span>
+      </button>
+      <button data-screen="profile">
+        <i class="bi bi-person"></i>
+        <span>Profile</span>
+      </button>
     </nav>
+
   </div>
 
   <script src="script.js"></script>
