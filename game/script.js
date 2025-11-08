@@ -10,7 +10,7 @@ const coinsDisplay = document.getElementById('coins');
 const profileCoins = document.getElementById('profileCoins');
 const energyBar = document.getElementById('energy-bar');
 const energyText = document.getElementById('energy-text');
-const energyLabel = document.getElementById('energy-label'); // 🔸 текст всередині прогрес-бара
+const energyLabel = document.getElementById('energy-label'); // 🔸 текст поверх прогрес-бара
 
 // 🔹 Оновлення прогрес-бару енергії
 function updateEnergy(animated = false) {
@@ -18,23 +18,30 @@ function updateEnergy(animated = false) {
   energyBar.style.width = `${percent}%`;
   const text = `${energy}/${maxEnergy} ⚡`;
 
-  // 🔸 оновлення тексту в обох місцях (якщо вони існують)
+  // 🔸 оновлення тексту
   if (energyText) energyText.textContent = text;
   if (energyLabel) {
     energyLabel.textContent = text;
     if (animated) {
-      energyLabel.style.transform = "scale(1.2)";
-      setTimeout(() => (energyLabel.style.transform = "scale(1)"), 200);
+      energyLabel.style.transform = "translateY(-50%) scale(1.15)";
+      setTimeout(() => (energyLabel.style.transform = "translateY(-50%) scale(1)"), 200);
     }
   }
 
   // 🔹 Зміна кольору енергії залежно від рівня
   if (percent > 70) {
     energyBar.style.background = "linear-gradient(90deg, #00f6ff, #00ff99)";
+    energyBar.classList.remove("low-energy");
   } else if (percent > 30) {
     energyBar.style.background = "linear-gradient(90deg, #f6ff00, #ffaa00)";
+    energyBar.classList.remove("low-energy");
   } else {
     energyBar.style.background = "linear-gradient(90deg, #ff5f5f, #ff0000)";
+    if (percent < 10) {
+      energyBar.classList.add("low-energy"); // 🩸 додаємо пульсацію
+    } else {
+      energyBar.classList.remove("low-energy");
+    }
   }
 
   // 🔸 Якщо енергії немає — кнопка неактивна
@@ -69,7 +76,6 @@ function spawnFlash() {
   const flash = document.createElement('div');
   flash.classList.add('energy-flash');
   flash.textContent = '⚡ +1';
-  // Додаємо невелику випадковість у позицію
   const offsetX = 40 + Math.random() * 20;
   const offsetY = 100 + Math.random() * 10;
   flash.style.left = `${offsetX}px`;
@@ -80,7 +86,7 @@ function spawnFlash() {
 
 // 🔸 Подія натискання TAP
 tapButton.addEventListener('click', () => {
-  if (energy <= 0) return; // якщо енергії нема — не працює
+  if (energy <= 0) return;
   coins++;
   energy--;
   coinsDisplay.textContent = coins;
@@ -95,7 +101,7 @@ setInterval(() => {
     energy += regenRate;
     if (energy > maxEnergy) energy = maxEnergy;
     updateEnergy(true);
-    spawnFlash(); // ⚡ блискавка при +енергії
+    spawnFlash();
   }
 }, regenInterval);
 
