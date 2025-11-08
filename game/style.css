@@ -1,104 +1,109 @@
-/* === Неонова тема з плавною анімацією === */
-
 body {
-  font-family: 'Press Start 2P', monospace;
-  background: #0d0f10 url('https://raw.githubusercontent.com/zhaz1k/tapgame-/main/photo_2025-11-07_20-32-53.jpg') no-repeat center center fixed;
-  background-size: cover;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(circle at center, #0a0f1a, #000);
   color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  margin: 0;
   overflow: hidden;
 }
 
-/* Плавне затемнення поверх фону, щоб текст був читабельний */
-body::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  z-index: 0;
-}
-
-/* Неонові “світлові хвилі” на фоні */
-@keyframes neonGlow {
-  0% { background-position: 0% 50%; filter: brightness(1) blur(0px); }
-  50% { background-position: 100% 50%; filter: brightness(1.15) blur(1px); }
-  100% { background-position: 0% 50%; filter: brightness(1) blur(0px); }
-}
-
-body::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 20% 20%, #00ffff15, transparent 40%),
-              radial-gradient(circle at 80% 80%, #ff00ff15, transparent 40%);
-  background-size: 200% 200%;
-  animation: neonGlow 10s ease-in-out infinite;
-  z-index: 1;
-}
-
-#menu, #game {
-  text-align: center;
+.app {
+  width: 100%;
+  max-width: 400px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   position: relative;
-  z-index: 2;
 }
 
-/* === Кнопки === */
-button {
-  font-family: 'Press Start 2P';
-  background: linear-gradient(145deg, #00ffcc, #0077ff);
+.screen {
+  display: none;
+  flex: 1;
+  text-align: center;
+  padding: 30px 20px 80px;
+}
+
+.screen.active {
+  display: block;
+  animation: fadeIn 0.4s ease;
+}
+
+.balance {
+  font-size: 1.5rem;
+  margin-bottom: 30px;
+}
+
+#tapButton {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #00f6ff, #0057ff);
   color: white;
   border: none;
-  padding: 15px 25px;
-  margin: 10px;
-  cursor: pointer;
-  image-rendering: pixelated;
-  box-shadow: 0 0 10px #00ffee, 0 0 20px #00ffee;
-  transition: all 0.2s ease, transform 0.1s;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+  font-size: 1.2rem;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+#tapButton:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+}
+
+.task-list {
+  list-style: none;
+  padding: 0;
+}
+
+.task-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.claim {
+  background: #00f6ff;
+  border: none;
+  color: #000;
+  padding: 6px 12px;
   border-radius: 8px;
-}
-
-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px #00ffee, 0 0 40px #00ffee;
-}
-
-button:active {
-  transform: scale(0.98);
-  box-shadow: 0 0 5px #00ffee;
-}
-
-/* === Головний блок гри === */
-#game {
-  width: 100%;
-  height: 100vh;
-}
-
-/* === Елемент, по якому клікають === */
-#block {
-  width: 120px;
-  height: 120px;
-  background: url('https://raw.githubusercontent.com/zhaz1k/tapgame-/main/IMG_0267.PNG');
-  background-size: cover;
-  image-rendering: pixelated;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
   cursor: pointer;
-  transition: transform 0.1s ease, filter 0.1s;
-  z-index: 3;
+  font-weight: bold;
 }
 
-#block:hover {
-  filter: drop-shadow(0 0 10px #00ffee);
-  transform: translate(-50%, -50%) scale(1.05);
+.bottom-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #0b0f1e;
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 0;
 }
 
-#block:active {
-  transform: translate(-50%, -50%) scale(0.9);
-  filter: drop-shadow(0 0 5px #00ffee);
+.bottom-nav button {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.bottom-nav button.active {
+  color: #00f6ff;
+  text-shadow: 0 0 8px #00f6ff;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
