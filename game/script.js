@@ -1,11 +1,44 @@
 let coins = 0;
+let energy = 500;          // Початкова енергія
+const maxEnergy = 500;     // Максимальна енергія
+const regenRate = 1;       // Скільки енергії відновлюється
+const regenInterval = 2000; // 1 енергія кожні 2 секунди
 
-// 🔹 Tap функціонал
+// 🔹 Елементи
 const tapButton = document.getElementById('tapButton');
 const coinsDisplay = document.getElementById('coins');
 const profileCoins = document.getElementById('profileCoins');
+const energyBar = document.getElementById('energy-bar');
+const energyText = document.getElementById('energy-text');
+const timerDisplay = document.getElementById('timer');
 
-// Функція появи монетки при кліку
+// 🔹 Функція оновлення енергії
+function updateEnergy() {
+  const percent = (energy / maxEnergy) * 100;
+  energyBar.style.width = `${percent}%`;
+  energyText.textContent = `${energy}/${maxEnergy}`;
+}
+
+// 🔹 Відновлення енергії з таймером
+setInterval(() => {
+  if (energy < maxEnergy) {
+    energy += regenRate;
+    updateEnergy();
+  }
+}, regenInterval);
+
+// 🔹 Форматований таймер
+function startTimer() {
+  let seconds = regenInterval / 1000;
+  setInterval(() => {
+    seconds--;
+    if (seconds <= 0) seconds = regenInterval / 1000;
+    timerDisplay.textContent = `⚡ +${regenRate} через ${seconds}s`;
+  }, 1000);
+}
+startTimer();
+
+// 🔹 Функція появи монетки при кліку
 function spawnCoin() {
   const coin = document.createElement('div');
   coin.classList.add('coin');
@@ -17,15 +50,17 @@ function spawnCoin() {
   coin.style.left = `${x}px`;
   coin.style.top = `${y}px`;
 
-  // Видаляємо монетку після анімації
   setTimeout(() => coin.remove(), 1200);
 }
 
-// Подія кліку по кнопці TAP
+// 🔸 Натискання TAP
 tapButton.addEventListener('click', () => {
+  if (energy <= 0) return; // якщо енергія закінчилась — не рахує кліки
   coins++;
+  energy--;
   coinsDisplay.textContent = coins;
   if (profileCoins) profileCoins.textContent = coins;
+  updateEnergy();
   spawnCoin();
 });
 
@@ -42,3 +77,6 @@ buttons.forEach(btn => {
     document.getElementById(btn.dataset.screen).classList.add('active');
   });
 });
+
+// 🔹 Ініціалізація
+updateEnergy();
