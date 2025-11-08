@@ -1,27 +1,50 @@
 // ------------------------------
-// 🔹 Основні змінні гри
+// 🔹 Основні змінні
 // ------------------------------
 let coins = 0;
 let energy = 500;
 const maxEnergy = 500;
 const regenRate = 1;
-const regenInterval = 2000; // +1 енергія кожні 2 секунди
+const regenInterval = 2000;
 let xp = 0;
 let level = 1;
 
 // ------------------------------
 // 🔹 Елементи DOM
 // ------------------------------
-const tapButton    = document.getElementById('tapButton');
-const coinsDisplay = document.getElementById('coins');
-const profileCoins = document.getElementById('profileCoins');
-const energyBar    = document.getElementById('energy-bar');
-const energyLabel  = document.getElementById('energy-label');
-const xpDisplay    = document.getElementById('xp');
-const levelDisplay = document.getElementById('level');
+const tapButton = document.getElementById("tapButton");
+const coinsDisplay = document.getElementById("coins");
+const profileCoins = document.getElementById("profileCoins");
+const energyBar = document.getElementById("energy-bar");
+const energyLabel = document.getElementById("energy-label");
+const xpDisplay = document.getElementById("xp");
+const levelDisplay = document.getElementById("level");
+
+// 🧩 Telegram-профіль
+const usernameEl = document.getElementById("username");
+const photoEl = document.getElementById("userPhoto");
+const userIdEl = document.getElementById("userId");
 
 // ------------------------------
-// 💾 Збереження / Завантаження
+// 🧩 Telegram WebApp інтеграція
+// ------------------------------
+const tg = window.Telegram?.WebApp;
+if (tg && tg.initDataUnsafe?.user) {
+  const user = tg.initDataUnsafe.user;
+
+  if (usernameEl)
+    usernameEl.textContent =
+      user.username ? `@${user.username}` : user.first_name || "Користувач";
+
+  if (photoEl && user.photo_url) {
+    photoEl.src = user.photo_url;
+  }
+
+  if (userIdEl) userIdEl.textContent = `ID: ${user.id}`;
+}
+
+// ------------------------------
+// 💾 Локальне збереження
 // ------------------------------
 function saveGame() {
   const data = { coins, xp, level, energy };
@@ -33,15 +56,15 @@ function loadGame() {
   const saved = localStorage.getItem("tapgame_save");
   if (saved) {
     const data = JSON.parse(saved);
-    coins  = data.coins  ?? 0;
-    xp     = data.xp     ?? 0;
-    level  = data.level  ?? 1;
+    coins = data.coins ?? 0;
+    xp = data.xp ?? 0;
+    level = data.level ?? 1;
     energy = data.energy ?? maxEnergy;
   }
 }
 
 // ------------------------------
-// 🕓 Відновлення енергії після паузи
+// ⏰ Відновлення енергії офлайн
 // ------------------------------
 function restoreEnergyAfterPause() {
   const lastSave = localStorage.getItem("tapgame_last_update");
@@ -54,18 +77,20 @@ function restoreEnergyAfterPause() {
 }
 
 // ------------------------------
-// 🔹 Рендер UI
+// 🔹 Відображення UI
 // ------------------------------
 function renderCoins() {
   if (coinsDisplay) coinsDisplay.textContent = coins;
   if (profileCoins) profileCoins.textContent = coins;
 }
-
 function renderXP() {
   if (xpDisplay) xpDisplay.textContent = xp;
   if (levelDisplay) levelDisplay.textContent = level;
 }
 
+// ------------------------------
+// 🔹 Енергія
+// ------------------------------
 function updateEnergy(animated = false) {
   energy = Math.max(0, Math.min(maxEnergy, Math.floor(energy)));
   const percent = (energy / maxEnergy) * 100;
@@ -81,13 +106,15 @@ function updateEnergy(animated = false) {
   }
 
   if (energyBar) {
-    if (percent > 70) {
-      energyBar.style.background = "linear-gradient(90deg, #00f6ff, #00ff99)";
-    } else if (percent > 30) {
-      energyBar.style.background = "linear-gradient(90deg, #f6ff00, #ffaa00)";
-    } else {
-      energyBar.style.background = "linear-gradient(90deg, #ff5f5f, #ff0000)";
-    }
+    if (percent > 70)
+      energyBar.style.background =
+        "linear-gradient(90deg, #00f6ff, #00ff99)";
+    else if (percent > 30)
+      energyBar.style.background =
+        "linear-gradient(90deg, #f6ff00, #ffaa00)";
+    else
+      energyBar.style.background =
+        "linear-gradient(90deg, #ff5f5f, #ff0000)";
   }
 
   if (tapButton) {
@@ -98,7 +125,7 @@ function updateEnergy(animated = false) {
 }
 
 // ------------------------------
-// 🔹 XP і рівень
+// 🔹 XP
 // ------------------------------
 function addXP(amount = 1) {
   xp += amount;
@@ -137,7 +164,7 @@ function spawnFlash() {
 }
 
 // ------------------------------
-// 🔸 TAP натискання
+// 🖱️ TAP
 // ------------------------------
 if (tapButton) {
   tapButton.addEventListener("click", () => {
@@ -153,7 +180,7 @@ if (tapButton) {
 }
 
 // ------------------------------
-// 🔹 Автовідновлення енергії
+// 🔁 Автовідновлення енергії
 // ------------------------------
 setInterval(() => {
   if (energy < maxEnergy) {
@@ -166,7 +193,7 @@ setInterval(() => {
 }, regenInterval);
 
 // ------------------------------
-// 🔹 Перемикання вкладок
+// 📱 Перемикання вкладок
 // ------------------------------
 const buttons = document.querySelectorAll(".bottom-nav button");
 const screens = document.querySelectorAll(".screen");
@@ -181,7 +208,7 @@ buttons.forEach((btn) => {
 });
 
 // ------------------------------
-// 🔹 Ініціалізація
+// 🚀 Ініціалізація
 // ------------------------------
 loadGame();
 restoreEnergyAfterPause();
