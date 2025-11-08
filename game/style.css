@@ -242,11 +242,16 @@ body::before {
   text-align: center;
   font-size: 0.65rem;
   color: #fff;
-  text-shadow: 0 0 4px #00f6ff;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-shadow:
+    0 0 3px rgba(0, 0, 0, 0.8),
+    0 0 6px rgba(0, 0, 0, 0.6),
+    0 0 8px rgba(0, 255, 255, 0.4);
   pointer-events: none;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, color 0.2s ease;
 }
+
 
 
 
