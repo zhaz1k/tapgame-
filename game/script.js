@@ -11,6 +11,12 @@ let level = 1;
 
 let currentUserId = "guest"; // Telegram ID або "guest"
 
+if (window.Telegram?.WebApp) {
+  window.Telegram.WebApp.ready(); // повідомляє Telegram, що додаток завантажився
+  console.log("✅ Telegram WebApp ініціалізовано");
+}
+
+
 // ------------------------------
 // 🔹 Елементи DOM
 // ------------------------------
