@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Telegram WebApp Test</title>
+  <style>
+    body {
+      font-family: monospace;
+      white-space: pre-wrap;
+      color: #0f0;
+      background: #000;
+      padding: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Telegram WebApp Debug</h2>
+  <pre id="output">Очікування даних...</pre>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+    const out = document.getElementById("output");
+
+    if (tg) {
+      tg.ready();
+      out.textContent = "✅ Telegram WebApp знайдено.\n\n";
+      console.log("Telegram WebApp:", tg);
+      console.log("initDataUnsafe:", tg.initDataUnsafe);
+
+      out.textContent += "🔍 initDataUnsafe:\n" + JSON.stringify(tg.initDataUnsafe, null, 2);
+
+      if (tg.initDataUnsafe?.user) {
+        const u = tg.initDataUnsafe.user;
+        out.textContent += `\n\n👤 Користувач:\n${JSON.stringify(u, null, 2)}`;
+      } else {
+        out.textContent += "\n\n⚠️ user відсутній — Telegram не передає дані!";
+      }
+    } else {
+      out.textContent = "❌ Telegram WebApp API не знайдено. Ймовірно, відкрито у звичайному браузері.";
+    }
+  </script>
+</body>
+</html>
