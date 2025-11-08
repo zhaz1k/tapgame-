@@ -13,13 +13,6 @@
     <!-- 🏠 Головна -->
     <div class="screen active" id="home">
       <h1 class="balance">💰 <span id="coins">0</span></h1>
-      <div class="energy-container">
-  <div id="energy-bar"></div>
-  <div class="energy-info">
-    <span id="energy-text">500/500</span>
-    <span id="timer">⚡ +1 через 2s</span>
-  </div>
-</div>
       <button id="tapButton">TAP</button>
     </div>
 
@@ -44,6 +37,12 @@
       <h2>👤 Профіль</h2>
       <p>Ваш баланс: <span id="profileCoins">0</span> монет</p>
       <p>Рівень: <span id="level">1</span></p>
+    </div>
+
+    <!-- ⚡ Прогрес-бар енергії (зліва знизу) -->
+    <div class="energy-progress">
+      <div id="energy-bar"></div>
+      <span id="energy-text">500/500 ⚡</span>
     </div>
 
     <!-- 🧭 Нижнє меню -->
