@@ -1,65 +1,63 @@
-/* 🧭 Загальні стилі */
+/* 🔧 Базові обмеження для мобільних */
 * {
-  -webkit-tap-highlight-color: transparent; /* прибирає підсвітку при натисканні */
-  user-select: none; /* забороняє виділення тексту */
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  touch-action: manipulation;
 }
 
 html, body {
+  margin: 0;
+  padding: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden; /* забороняє прокрутку */
-  touch-action: manipulation; /* блокує масштабування при подвійних тапах */
+  overflow: hidden;
+  background: radial-gradient(circle at 30% 30%, #10121a, #07080f 80%);
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, #040716, #090e25);
   color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
 }
 
-/* 🔮 Анімований фон */
+/* 🔮 Плавний фоновий ефект */
 body::before {
   content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle at 20% 20%, rgba(0,255,255,0.2), transparent 60%),
-              radial-gradient(circle at 80% 80%, rgba(255,0,255,0.2), transparent 60%),
-              radial-gradient(circle at 50% 50%, rgba(0,100,255,0.15), transparent 70%);
-  animation: moveGlow 20s ease-in-out infinite;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 20% 20%, rgba(0,255,255,0.1), transparent 60%),
+              radial-gradient(circle at 80% 80%, rgba(255,0,255,0.1), transparent 60%);
+  background-size: 200% 200%;
+  animation: slowMove 25s ease-in-out infinite;
   z-index: 0;
 }
 
-@keyframes moveGlow {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-10%, -10%) scale(1.1); }
-  100% { transform: translate(0, 0) scale(1); }
+@keyframes slowMove {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
-/* 🔹 Контейнер застосунку */
+/* 🧱 Каркас застосунку */
 .app {
+  position: relative;
   width: 100%;
   max-width: 480px;
   height: 100vh;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  position: relative;
+  justify-content: space-between;
   z-index: 1;
-  background: rgba(0,0,0,0.2);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
 }
 
-/* 🔹 Екрани */
+/* 📱 Екрани */
 .screen {
   display: none;
   flex: 1;
   text-align: center;
-  padding: 20px 16px 80px;
+  padding: 30px 16px 90px;
   overflow-y: auto;
 }
 
@@ -75,41 +73,38 @@ body::before {
 
 /* 💰 Баланс */
 .balance {
-  font-size: 1.6rem;
-  font-weight: 600;
-  margin: 40px 0 20px;
+  font-size: 1.4rem;
+  margin: 30px 0 20px;
 }
 
-/* ⚡️ Головна кнопка Tap */
+/* 🟢 Кнопка TAP */
 #tapButton {
-  width: 180px;
-  height: 180px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
-  background: linear-gradient(145deg, #00f6ff, #0057ff);
   border: none;
-  color: #fff;
-  font-size: 1.3rem;
+  background: linear-gradient(145deg, #00f6ff, #0077ff);
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
+  color: white;
+  font-size: 1.2rem;
   font-weight: 600;
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
   transition: transform 0.1s ease, box-shadow 0.2s ease;
-  animation: pulse 2s infinite ease-in-out;
+  animation: pulse 2s ease-in-out infinite;
 }
 
 @keyframes pulse {
-  0%, 100% { box-shadow: 0 0 25px rgba(0, 255, 255, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(0, 255, 255, 0.7); }
+  0%, 100% { box-shadow: 0 0 20px rgba(0,255,255,0.3); }
+  50% { box-shadow: 0 0 35px rgba(0,255,255,0.8); }
 }
 
 #tapButton:active {
-  transform: scale(0.95);
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+  transform: scale(0.94);
 }
 
-/* 🧩 Завдання */
+/* 🎯 Завдання */
 .task-list {
   list-style: none;
   padding: 0;
-  margin-top: 30px;
 }
 
 .task-list li {
@@ -117,25 +112,18 @@ body::before {
   justify-content: space-between;
   align-items: center;
   background: rgba(255,255,255,0.05);
-  padding: 14px;
-  border-radius: 12px;
-  margin-bottom: 12px;
-  backdrop-filter: blur(8px);
+  padding: 14px 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
 }
 
 .claim {
   background: linear-gradient(135deg, #00f6ff, #0077ff);
   border: none;
   color: #000;
-  padding: 6px 14px;
-  border-radius: 8px;
-  cursor: pointer;
   font-weight: bold;
-  transition: 0.2s ease;
-}
-
-.claim:hover {
-  background: linear-gradient(135deg, #00ffff, #0099ff);
+  border-radius: 8px;
+  padding: 6px 12px;
 }
 
 /* 🧭 Нижнє меню */
@@ -145,29 +133,77 @@ body::before {
   left: 0;
   width: 100%;
   height: 70px;
-  background: rgba(10, 15, 30, 0.95);
-  backdrop-filter: blur(10px);
   display: flex;
   justify-content: space-around;
   align-items: center;
+  background: #0b0f1e;
   border-top: 1px solid rgba(255,255,255,0.1);
   z-index: 10;
-  padding-bottom: env(safe-area-inset-bottom); /* для iPhone */
+  margin: 0;
+  padding: 0;
 }
 
 .bottom-nav button {
-  background: none;
-  border: none;
-  color: #777;
-  font-size: 1.8rem;
-  cursor: pointer;
-  transition: 0.2s ease;
   flex: 1;
   height: 100%;
+  border: none;
+  background: none;
+  color: #888;
+  font-size: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s ease;
+}
+
+.bottom-nav button span {
+  font-size: 0.65rem;
+  margin-top: 2px;
+  letter-spacing: 0.5px;
 }
 
 .bottom-nav button.active {
   color: #00f6ff;
-  text-shadow: 0 0 8px #00f6ff;
-  transform: scale(1.1);
+  text-shadow: 0 0 6px #00f6ff;
+}
+
+/* 🔒 Меню чітко притиснуте до низу навіть на iPhone */
+.bottom-nav::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: env(safe-area-inset-bottom);
+  background: #0b0f1e;
+}
+
+/* 💰 Анімація монет */
+.coin {
+  position: fixed;
+  width: 32px;
+  height: 32px;
+  background: url("https://cdn-icons-png.flaticon.com/512/138/138292.png") no-repeat center;
+  background-size: cover;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  animation: coinFly 1.2s ease-out forwards;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+@keyframes coinFly {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -120%) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -180%) scale(0.7);
+  }
 }
