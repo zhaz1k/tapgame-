@@ -11,15 +11,20 @@ let xp = 0;
 let level = 1;
 
 // ------------------------------
-// 🔹 Елементи DOM
+// 🔹 Елементи DOM (з безпечними перевірками)
 // ------------------------------
-const tapButton = document.getElementById('tapButton');
+const tapButton    = document.getElementById('tapButton');
 const coinsDisplay = document.getElementById('coins');
 const profileCoins = document.getElementById('profileCoins');
-const energyBar = document.getElementById('energy-bar');
+
+const energyBar   = document.getElementById('energy-bar');
 const energyLabel = document.getElementById('energy-label');
-const xpDisplay = document.getElementById('xp');
+
+const xpDisplay    = document.getElementById('xp');
 const levelDisplay = document.getElementById('level');
+
+const usernameEl = document.getElementById("username");
+const photoEl    = document.getElementById("userPhoto");
 
 // ------------------------------
 // 🧩 Telegram WebApp інтеграція
@@ -27,18 +32,11 @@ const levelDisplay = document.getElementById('level');
 const tg = window.Telegram?.WebApp;
 if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
   const user = tg.initDataUnsafe.user;
-  const usernameEl = document.getElementById("username");
-  const photoEl = document.getElementById("userPhoto");
 
-  // Ім'я користувача
-  if (user.username) {
-    usernameEl.textContent = `@${user.username}`;
-  } else {
-    usernameEl.textContent = user.first_name || "Користувач";
+  if (usernameEl) {
+    usernameEl.textContent = user.username ? `@${user.username}` : (user.first_name || "Користувач");
   }
-
-  // Аватар
-  if (user.photo_url) {
+  if (photoEl && user.photo_url) {
     photoEl.src = user.photo_url;
   }
 }
@@ -48,70 +46,98 @@ if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
 // ------------------------------
 function saveGame() {
   const data = { coins, xp, level, energy };
-  localStorage.setItem("tapgame_save", JSON.stringify(data));
+  try {
+    localStorage.setItem("tapgame_save", JSON.stringify(data));
+  } catch (_) {}
 }
 
 function loadGame() {
-  const saved = localStorage.getItem("tapgame_save");
-  if (saved) {
+  try {
+    const saved = localStorage.getItem("tapgame_save");
+    if (!saved) return;
     const data = JSON.parse(saved);
-    coins = data.coins || 0;
-    xp = data.xp || 0;
-    level = data.level || 1;
-    energy = data.energy || maxEnergy;
+    coins  = Number.isFinite(data?.coins)  ? data.coins  : 0;
+    xp     = Number.isFinite(data?.xp)     ? data.xp     : 0;
+    level  = Number.isFinite(data?.level)  ? data.level  : 1;
+    energy = Number.isFinite(data?.energy) ? data.energy : maxEnergy;
+  } catch (_) {
+    // ігноруємо помилки парсингу
   }
 }
 
 // ------------------------------
-// 🔹 Оновлення енергії
+// 🔹 Допоміжні оновлення UI
 // ------------------------------
-function updateEnergy(animated = false) {
-  const percent = (energy / maxEnergy) * 100;
-  energyBar.style.width = `${percent}%`;
-  const text = `${energy}/${maxEnergy} ⚡`;
+function renderCoins() {
+  if (coinsDisplay) coinsDisplay.textContent = coins;
+  if (profileCoins) profileCoins.textContent = coins;
+}
 
+function renderXP() {
+  if (xpDisplay) xpDisplay.textContent = `${xp}`;
+  if (levelDisplay) levelDisplay.textContent = `${level}`;
+}
+
+// ------------------------------
+// 🔹 Оновлення енергії (без "миготіння" тексту)
+// ------------------------------
+const DEFAULT_GLOW = "0 0 3px rgba(0,0,0,0.8), 0 0 6px rgba(0,0,0,0.6), 0 0 8px rgba(0,255,255,0.4)";
+
+function updateEnergy(animated = false) {
+  // нормалізуємо значення
+  energy = Math.max(0, Math.min(maxEnergy, Math.floor(energy)));
+
+  const percent = (energy / maxEnergy) * 100;
+  if (energyBar) energyBar.style.width = `${percent}%`;
+
+  const text = `${energy}/${maxEnergy} ⚡`;
   if (energyLabel) {
     energyLabel.textContent = text;
+
+    // м'який неоновий підсвіт без зміни масштабу/позиції
     if (animated) {
-      energyLabel.style.transform = "translateY(-50%) scale(1.15)";
-      setTimeout(() => (energyLabel.style.transform = "translateY(-50%) scale(1)"), 200);
+      energyLabel.style.textShadow = "0 0 10px #00f6ff, 0 0 20px #00ffff";
+      // відкотимо до базового спокійного стану
+      setTimeout(() => {
+        energyLabel.style.textShadow = DEFAULT_GLOW;
+      }, 180);
     }
   }
 
-  // Колір енергії
-  if (percent > 70) {
-    energyBar.style.background = "linear-gradient(90deg, #00f6ff, #00ff99)";
-    energyBar.classList.remove("low-energy");
-  } else if (percent > 30) {
-    energyBar.style.background = "linear-gradient(90deg, #f6ff00, #ffaa00)";
-    energyBar.classList.remove("low-energy");
-  } else {
-    energyBar.style.background = "linear-gradient(90deg, #ff5f5f, #ff0000)";
-    if (percent < 10) {
-      energyBar.classList.add("low-energy");
-    } else {
+  // Зміна кольору заливки
+  if (energyBar) {
+    if (percent > 70) {
+      energyBar.style.background = "linear-gradient(90deg, #00f6ff, #00ff99)";
       energyBar.classList.remove("low-energy");
+    } else if (percent > 30) {
+      energyBar.style.background = "linear-gradient(90deg, #f6ff00, #ffaa00)";
+      energyBar.classList.remove("low-energy");
+    } else {
+      energyBar.style.background = "linear-gradient(90deg, #ff5f5f, #ff0000)";
+      if (percent < 10) energyBar.classList.add("low-energy");
+      else energyBar.classList.remove("low-energy");
     }
   }
 
-  // Кнопка активна лише якщо є енергія
-  tapButton.disabled = energy <= 0;
-  tapButton.style.opacity = energy <= 0 ? "0.5" : "1";
-  tapButton.style.cursor = energy <= 0 ? "not-allowed" : "pointer";
+  // Стан кнопки TAP
+  if (tapButton) {
+    const off = energy <= 0;
+    tapButton.disabled = off;
+    tapButton.style.opacity = off ? "0.5" : "1";
+    tapButton.style.cursor  = off ? "not-allowed" : "pointer";
+  }
 }
 
 // ------------------------------
-// 🔹 Оновлення XP і рівня
+// 🔹 XP / Level
 // ------------------------------
-function updateXP(amount = 1) {
+function addXP(amount = 1) {
   xp += amount;
-  if (xp >= 100) {
+  while (xp >= 100) {
     xp -= 100;
     level++;
   }
-
-  xpDisplay.textContent = `${xp}`;
-  levelDisplay.textContent = `${level}`;
+  renderXP();
   saveGame();
 }
 
@@ -126,7 +152,7 @@ function spawnCoin() {
   const x = window.innerWidth / 2 + (Math.random() * 60 - 30);
   const y = window.innerHeight / 2;
   coin.style.left = `${x}px`;
-  coin.style.top = `${y}px`;
+  coin.style.top  = `${y}px`;
 
   setTimeout(() => coin.remove(), 1200);
 }
@@ -140,7 +166,7 @@ function spawnFlash() {
   flash.textContent = '⚡ +1';
   const offsetX = 40 + Math.random() * 20;
   const offsetY = 100 + Math.random() * 10;
-  flash.style.left = `${offsetX}px`;
+  flash.style.left   = `${offsetX}px`;
   flash.style.bottom = `${offsetY}px`;
   document.body.appendChild(flash);
   setTimeout(() => flash.remove(), 1200);
@@ -149,17 +175,18 @@ function spawnFlash() {
 // ------------------------------
 // 🔸 TAP натискання
 // ------------------------------
-tapButton.addEventListener('click', () => {
-  if (energy <= 0) return;
-  coins++;
-  energy--;
-  updateXP(1);
-  coinsDisplay.textContent = coins;
-  if (profileCoins) profileCoins.textContent = coins;
-  updateEnergy(true);
-  spawnCoin();
-  saveGame();
-});
+if (tapButton) {
+  tapButton.addEventListener('click', () => {
+    if (energy <= 0) return;
+    coins++;
+    energy--;
+    addXP(1);
+    renderCoins();
+    updateEnergy(true);
+    spawnCoin();
+    saveGame();
+  });
+}
 
 // ------------------------------
 // 🔹 Відновлення енергії
@@ -185,7 +212,8 @@ buttons.forEach(btn => {
     buttons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     screens.forEach(s => s.classList.remove('active'));
-    document.getElementById(btn.dataset.screen).classList.add('active');
+    const target = document.getElementById(btn.dataset.screen);
+    if (target) target.classList.add('active');
   });
 });
 
@@ -193,7 +221,6 @@ buttons.forEach(btn => {
 // 🔹 Ініціалізація
 // ------------------------------
 loadGame();
-updateEnergy();
-updateXP(0);
-coinsDisplay.textContent = coins;
-if (profileCoins) profileCoins.textContent = coins;
+renderCoins();
+renderXP();
+updateEnergy(); // без "animated", щоб не підсвічувало при старті
