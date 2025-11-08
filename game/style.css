@@ -208,32 +208,32 @@ body::before {
   }
 }
 
-/* ⚡ Енергія */
-.energy-container {
-  width: 80%;
-  max-width: 320px;
-  height: 20px;
-  background: rgba(255,255,255,0.1);
+/* ⚡ Компактний прогрес-бар енергії */
+.energy-progress {
+  position: fixed;
+  bottom: 80px; /* трохи вище меню */
+  left: 14px;
+  width: 130px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-  margin: 0 auto 20px;
-  position: relative;
   overflow: hidden;
+  z-index: 20;
 }
 
 #energy-bar {
   height: 100%;
   width: 100%;
   background: linear-gradient(90deg, #00f6ff, #0077ff);
+  transition: width 0.25s ease-in-out;
   border-radius: 10px;
-  transition: width 0.2s ease-in-out;
 }
 
-.energy-info {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8rem;
+#energy-text {
+  position: absolute;
+  top: -22px;
+  left: 4px;
+  font-size: 0.65rem;
   color: #aaf;
-  margin-top: 6px;
-  padding: 0 10px;
+  font-weight: 500;
 }
-
