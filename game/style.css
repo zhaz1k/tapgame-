@@ -208,32 +208,34 @@ body::before {
   }
 }
 
-/* ⚡ Компактний прогрес-бар енергії */
+/* ⚡ Прогрес-бар енергії */
 .energy-progress {
   position: fixed;
-  bottom: 80px; /* трохи вище меню */
+  bottom: 80px;
   left: 14px;
-  width: 130px;
-  height: 10px;
-  background: rgba(255, 255, 255, 0.1);
+  width: 140px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 10px;
   overflow: hidden;
   z-index: 20;
+  box-shadow: 0 0 6px rgba(0, 255, 255, 0.3);
 }
 
 #energy-bar {
   height: 100%;
   width: 100%;
   background: linear-gradient(90deg, #00f6ff, #0077ff);
-  transition: width 0.25s ease-in-out;
   border-radius: 10px;
+  transition: width 0.25s ease-in-out, background 0.3s ease-in-out;
 }
 
 #energy-text {
   position: absolute;
-  top: -22px;
-  left: 4px;
+  top: -20px;
+  left: 2px;
   font-size: 0.65rem;
   color: #aaf;
   font-weight: 500;
+  text-shadow: 0 0 3px #00f6ff;
 }
