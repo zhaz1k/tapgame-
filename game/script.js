@@ -223,4 +223,29 @@ buttons.forEach(btn => {
 loadGame();
 renderCoins();
 renderXP();
+// ------------------------------
+// 🕓 Відновлення енергії після паузи
+// ------------------------------
+function restoreEnergyAfterPause() {
+  const lastSave = localStorage.getItem("tapgame_last_update");
+  if (!lastSave) return;
+
+  const lastTime = parseInt(lastSave, 10);
+  const now = Date.now();
+  const diffMs = now - lastTime;
+
+  // Скільки енергії могло б відновитись
+  const gained = Math.floor(diffMs / regenInterval) * regenRate;
+  if (gained > 0 && energy < maxEnergy) {
+    energy = Math.min(maxEnergy, energy + gained);
+  }
+}
+
+// 🕓 Оновлюємо timestamp при кожному сейві
+function saveGame() {
+  const data = { coins, xp, level, energy };
+  localStorage.setItem("tapgame_save", JSON.stringify(data));
+  localStorage.setItem("tapgame_last_update", Date.now().toString());
+}
+
 updateEnergy(); // без "animated", щоб не підсвічувало при старті
