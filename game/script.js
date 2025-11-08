@@ -16,6 +16,26 @@ function updateEnergy() {
   const percent = (energy / maxEnergy) * 100;
   energyBar.style.width = `${percent}%`;
   energyText.textContent = `${energy}/${maxEnergy} ⚡`;
+
+  // Зміна кольору енергії в залежності від рівня
+  if (percent > 70) {
+    energyBar.style.background = "linear-gradient(90deg, #00f6ff, #00ff99)";
+  } else if (percent > 30) {
+    energyBar.style.background = "linear-gradient(90deg, #f6ff00, #ffaa00)";
+  } else {
+    energyBar.style.background = "linear-gradient(90deg, #ff5f5f, #ff0000)";
+  }
+
+  // Якщо енергії немає — кнопка неактивна
+  if (energy <= 0) {
+    tapButton.disabled = true;
+    tapButton.style.opacity = "0.5";
+    tapButton.style.cursor = "not-allowed";
+  } else {
+    tapButton.disabled = false;
+    tapButton.style.opacity = "1";
+    tapButton.style.cursor = "pointer";
+  }
 }
 
 // 🔹 Автоматичне відновлення енергії
