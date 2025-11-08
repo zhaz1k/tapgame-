@@ -1,13 +1,37 @@
+/* 🌌 Базовий стиль */
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
-  background: radial-gradient(circle at center, #0a0f1a, #000);
+  background: linear-gradient(135deg, #040716, #090e25);
   color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   overflow: hidden;
+  position: relative;
+}
+
+/* 🔮 Анімований фон */
+body::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 20% 20%, rgba(0,255,255,0.2), transparent 60%),
+              radial-gradient(circle at 80% 80%, rgba(255,0,255,0.2), transparent 60%),
+              radial-gradient(circle at 50% 50%, rgba(0,100,255,0.15), transparent 70%);
+  animation: moveGlow 20s ease-in-out infinite;
+  z-index: 0;
+}
+
+/* 🔁 Анімація плавного руху “світлових плям” */
+@keyframes moveGlow {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-10%, -10%) scale(1.1); }
+  100% { transform: translate(0, 0) scale(1); }
 }
 
 .app {
@@ -17,8 +41,10 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
+  z-index: 1;
 }
 
+/* 🔹 Екрани */
 .screen {
   display: none;
   flex: 1;
@@ -31,6 +57,12 @@ body {
   animation: fadeIn 0.4s ease;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 💰 Головний екран */
 .balance {
   font-size: 1.5rem;
   margin-bottom: 30px;
@@ -43,16 +75,24 @@ body {
   background: linear-gradient(145deg, #00f6ff, #0057ff);
   color: white;
   border: none;
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
-  font-size: 1.2rem;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+  font-size: 1.3rem;
   transition: transform 0.1s ease, box-shadow 0.2s ease;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+/* 🫧 Легка пульсація кнопки */
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 25px rgba(0, 255, 255, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(0, 255, 255, 0.7); }
 }
 
 #tapButton:active {
-  transform: scale(0.95);
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+  transform: scale(0.93);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
 }
 
+/* 🧩 Завдання */
 .task-list {
   list-style: none;
   padding: 0;
@@ -62,48 +102,53 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #111;
+  background: rgba(255,255,255,0.05);
   padding: 15px;
   border-radius: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  backdrop-filter: blur(8px);
 }
 
 .claim {
-  background: #00f6ff;
+  background: linear-gradient(135deg, #00f6ff, #0077ff);
   border: none;
   color: #000;
   padding: 6px 12px;
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
+  transition: 0.2s ease;
 }
 
+.claim:hover {
+  background: linear-gradient(135deg, #00ffff, #0099ff);
+}
+
+/* 🧭 Нижнє меню */
 .bottom-nav {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  background: #0b0f1e;
+  background: rgba(10, 15, 30, 0.9);
+  backdrop-filter: blur(12px);
   display: flex;
   justify-content: space-around;
   border-top: 1px solid rgba(255,255,255,0.1);
-  padding: 10px 0;
+  padding: 12px 0;
 }
 
 .bottom-nav button {
   background: none;
   border: none;
-  color: #888;
+  color: #777;
   font-size: 1.6rem;
   cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .bottom-nav button.active {
   color: #00f6ff;
   text-shadow: 0 0 8px #00f6ff;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  transform: scale(1.1);
 }
