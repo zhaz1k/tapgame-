@@ -208,13 +208,13 @@ body::before {
   }
 }
 
-/* ⚡ Прогрес-бар енергії */
+/* ⚡ Прогрес-бар енергії з числом усередині */
 .energy-progress {
   position: fixed;
   bottom: 80px;
   left: 14px;
   width: 140px;
-  height: 12px;
+  height: 14px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 10px;
   overflow: hidden;
@@ -223,22 +223,26 @@ body::before {
 }
 
 #energy-bar {
+  position: relative;
   height: 100%;
   width: 100%;
   background: linear-gradient(90deg, #00f6ff, #0077ff);
   border-radius: 10px;
   transition: width 0.25s ease-in-out, background 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-#energy-text {
-  position: absolute;
-  top: -20px;
-  left: 2px;
+#energy-label {
   font-size: 0.65rem;
-  color: #aaf;
-  font-weight: 500;
+  color: #fff;
   text-shadow: 0 0 3px #00f6ff;
+  font-weight: 600;
+  position: absolute;
+  pointer-events: none;
 }
+
 
 /* ⚡ Анімація блискавки при відновленні енергії */
 .energy-flash {
