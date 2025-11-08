@@ -1,3 +1,12 @@
+for (let i = 0; i < 25; i++) {
+  const p = document.createElement('div');
+  p.classList.add('particle');
+  p.style.left = Math.random() * 100 + 'vw';
+  p.style.animationDelay = Math.random() * 5 + 's';
+  document.body.appendChild(p);
+}
+
+
 let score = 0;
 const playBtn = document.getElementById('playBtn');
 const game = document.getElementById('game');
