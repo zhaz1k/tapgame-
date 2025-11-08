@@ -1,6 +1,9 @@
+/* === Неонова тема з плавною анімацією === */
+
 body {
   font-family: 'Press Start 2P', monospace;
-  background: radial-gradient(circle at center, #0f2027, #203a43, #2c5364);
+  background: #0d0f10 url('https://raw.githubusercontent.com/zhaz1k/tapgame-/main/photo_2025-11-07_20-32-53.jpg') no-repeat center center fixed;
+  background-size: cover;
   color: #fff;
   display: flex;
   justify-content: center;
@@ -8,88 +11,94 @@ body {
   height: 100vh;
   margin: 0;
   overflow: hidden;
-  position: relative;
-  animation: neonPulse 6s ease-in-out infinite alternate;
 }
 
-/* 🌌 Неонові частинки у фоні */
-.particle {
+/* Плавне затемнення поверх фону, щоб текст був читабельний */
+body::before {
+  content: "";
   position: absolute;
-  width: 4px;
-  height: 4px;
-  background: #00ffff;
-  border-radius: 50%;
-  opacity: 0.6;
-  animation: float 6s linear infinite;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 0;
 }
 
-@keyframes float {
-  from {
-    transform: translateY(100vh);
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  to {
-    transform: translateY(-10vh);
-    opacity: 0;
-  }
+/* Неонові “світлові хвилі” на фоні */
+@keyframes neonGlow {
+  0% { background-position: 0% 50%; filter: brightness(1) blur(0px); }
+  50% { background-position: 100% 50%; filter: brightness(1.15) blur(1px); }
+  100% { background-position: 0% 50%; filter: brightness(1) blur(0px); }
 }
 
-/* 🌈 Пульсування неонового світла */
-@keyframes neonPulse {
-  0% {
-    background: radial-gradient(circle at center, #0f2027, #203a43, #2c5364);
-  }
-  50% {
-    background: radial-gradient(circle at center, #1a2a6c, #b21f1f, #fdbb2d);
-  }
-  100% {
-    background: radial-gradient(circle at center, #0f2027, #203a43, #2c5364);
-  }
+body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, #00ffff15, transparent 40%),
+              radial-gradient(circle at 80% 80%, #ff00ff15, transparent 40%);
+  background-size: 200% 200%;
+  animation: neonGlow 10s ease-in-out infinite;
+  z-index: 1;
 }
 
-/* Твій оригінальний стиль нижче ↓ */
-#menu {
+#menu, #game {
   text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
+/* === Кнопки === */
 button {
   font-family: 'Press Start 2P';
-  background: #6b8e23;
+  background: linear-gradient(145deg, #00ffcc, #0077ff);
   color: white;
-  border: 4px solid #3e5c14;
-  padding: 15px;
+  border: none;
+  padding: 15px 25px;
   margin: 10px;
   cursor: pointer;
   image-rendering: pixelated;
-  box-shadow: 4px 4px #2e4010;
-  transition: all 0.1s ease;
+  box-shadow: 0 0 10px #00ffee, 0 0 20px #00ffee;
+  transition: all 0.2s ease, transform 0.1s;
+  border-radius: 8px;
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #00ffee, 0 0 40px #00ffee;
 }
 
 button:active {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px #2e4010;
+  transform: scale(0.98);
+  box-shadow: 0 0 5px #00ffee;
 }
 
+/* === Головний блок гри === */
 #game {
-  text-align: center;
-  position: relative;
   width: 100%;
   height: 100vh;
 }
 
+/* === Елемент, по якому клікають === */
 #block {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   background: url('https://raw.githubusercontent.com/zhaz1k/tapgame-/main/IMG_0267.PNG');
   background-size: cover;
   image-rendering: pixelated;
-  margin: 0 auto;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   cursor: pointer;
+  transition: transform 0.1s ease, filter 0.1s;
+  z-index: 3;
+}
+
+#block:hover {
+  filter: drop-shadow(0 0 10px #00ffee);
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+#block:active {
+  transform: translate(-50%, -50%) scale(0.9);
+  filter: drop-shadow(0 0 5px #00ffee);
 }
