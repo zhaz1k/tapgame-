@@ -10,14 +10,25 @@ const coinsDisplay = document.getElementById('coins');
 const profileCoins = document.getElementById('profileCoins');
 const energyBar = document.getElementById('energy-bar');
 const energyText = document.getElementById('energy-text');
+const energyLabel = document.getElementById('energy-label'); // 🔸 текст всередині прогрес-бара
 
 // 🔹 Оновлення прогрес-бару енергії
-function updateEnergy() {
+function updateEnergy(animated = false) {
   const percent = (energy / maxEnergy) * 100;
   energyBar.style.width = `${percent}%`;
-  energyText.textContent = `${energy}/${maxEnergy} ⚡`;
+  const text = `${energy}/${maxEnergy} ⚡`;
 
-  // Зміна кольору енергії в залежності від рівня
+  // 🔸 оновлення тексту в обох місцях (якщо вони існують)
+  if (energyText) energyText.textContent = text;
+  if (energyLabel) {
+    energyLabel.textContent = text;
+    if (animated) {
+      energyLabel.style.transform = "scale(1.2)";
+      setTimeout(() => (energyLabel.style.transform = "scale(1)"), 200);
+    }
+  }
+
+  // 🔹 Зміна кольору енергії залежно від рівня
   if (percent > 70) {
     energyBar.style.background = "linear-gradient(90deg, #00f6ff, #00ff99)";
   } else if (percent > 30) {
@@ -26,7 +37,7 @@ function updateEnergy() {
     energyBar.style.background = "linear-gradient(90deg, #ff5f5f, #ff0000)";
   }
 
-  // Якщо енергії немає — кнопка неактивна
+  // 🔸 Якщо енергії немає — кнопка неактивна
   if (energy <= 0) {
     tapButton.disabled = true;
     tapButton.style.opacity = "0.5";
@@ -37,15 +48,6 @@ function updateEnergy() {
     tapButton.style.cursor = "pointer";
   }
 }
-
-// 🔹 Автоматичне відновлення енергії
-setInterval(() => {
-  if (energy < maxEnergy) {
-    energy += regenRate;
-    if (energy > maxEnergy) energy = maxEnergy;
-    updateEnergy();
-  }
-}, regenInterval);
 
 // 🔹 Ефект появи монетки
 function spawnCoin() {
@@ -62,6 +64,20 @@ function spawnCoin() {
   setTimeout(() => coin.remove(), 1200);
 }
 
+// 🔹 Ефект блискавки при +енергії
+function spawnFlash() {
+  const flash = document.createElement('div');
+  flash.classList.add('energy-flash');
+  flash.textContent = '⚡ +1';
+  // Додаємо невелику випадковість у позицію
+  const offsetX = 40 + Math.random() * 20;
+  const offsetY = 100 + Math.random() * 10;
+  flash.style.left = `${offsetX}px`;
+  flash.style.bottom = `${offsetY}px`;
+  document.body.appendChild(flash);
+  setTimeout(() => flash.remove(), 1200);
+}
+
 // 🔸 Подія натискання TAP
 tapButton.addEventListener('click', () => {
   if (energy <= 0) return; // якщо енергії нема — не працює
@@ -69,9 +85,19 @@ tapButton.addEventListener('click', () => {
   energy--;
   coinsDisplay.textContent = coins;
   if (profileCoins) profileCoins.textContent = coins;
-  updateEnergy();
+  updateEnergy(true);
   spawnCoin();
 });
+
+// 🔹 Автоматичне відновлення енергії
+setInterval(() => {
+  if (energy < maxEnergy) {
+    energy += regenRate;
+    if (energy > maxEnergy) energy = maxEnergy;
+    updateEnergy(true);
+    spawnFlash(); // ⚡ блискавка при +енергії
+  }
+}, regenInterval);
 
 // 🔸 Перемикання вкладок
 const buttons = document.querySelectorAll('.bottom-nav button');
@@ -88,24 +114,3 @@ buttons.forEach(btn => {
 
 // 🔹 Ініціалізація
 updateEnergy();
-
-// 🔹 Створює коротку анімацію блискавки при +енергії
-function spawnFlash() {
-  const flash = document.createElement('div');
-  flash.classList.add('energy-flash');
-  flash.textContent = '⚡ +1';
-  document.body.appendChild(flash);
-
-  setTimeout(() => flash.remove(), 1200);
-}
-
-// 🔹 Автоматичне відновлення енергії
-setInterval(() => {
-  if (energy < maxEnergy) {
-    energy += regenRate;
-    if (energy > maxEnergy) energy = maxEnergy;
-    updateEnergy();
-    spawnFlash(); // ⚡ додаємо ефект блискавки
-  }
-}, regenInterval);
-
