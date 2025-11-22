@@ -1,28 +1,61 @@
 <!DOCTYPE html>
-<html>
-  <head><meta charset="utf-8"><title>Telegram WebApp Debug</title></head>
-  <body style="background:#111;color:#0ff;font-family:sans-serif;padding:20px">
-    <h2>Telegram WebApp Debug</h2>
-    <div id="output">⏳ Перевірка...</div>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Telegram WebApp Debug</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #050815;
+      color: #00f6ff;
+      padding: 20px;
+      white-space: pre-wrap;
+    }
+    h1 {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+    #output {
+      font-family: monospace;
+      font-size: 0.9rem;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+  </style>
+</head>
+<body>
+  <h1>Telegram WebApp Debug</h1>
+  <div id="output">⏳ Перевірка...</div>
 
-    <script>
-      const output = document.getElementById('output');
-      const tg = window.Telegram?.WebApp;
+  <script>
+    const out = document.getElementById('output');
+
+    try {
+      const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 
       if (!tg) {
-        output.innerHTML = "❌ Telegram WebApp API не знайдено.<br>Ймовірно, відкрито у звичайному браузері.";
+        out.textContent = "❌ Telegram.WebApp НЕ знайдено.\n\n" +
+          "Швидше за все, сторінка відкрита у звичайному браузері або Telegram не передає WebApp API.";
       } else {
         tg.ready();
-        const user = tg.initDataUnsafe?.user;
-        if (user) {
-          output.innerHTML = `✅ Telegram WebApp API знайдено!<br><br>
-          ID: ${user.id}<br>
-          Username: @${user.username}<br>
-          Ім'я: ${user.first_name}`;
+        out.textContent = "✅ Telegram.WebApp знайдено.\n\n";
+
+        const init = tg.initDataUnsafe || {};
+        out.textContent += "🔍 initDataUnsafe:\n" + JSON.stringify(init, null, 2);
+
+        if (init.user) {
+          out.textContent += "\n\n👤 Користувач:\n" + JSON.stringify(init.user, null, 2);
         } else {
-          output.innerHTML = "⚠️ API знайдено, але user пустий — відкрий через кнопку WebApp.";
+          out.textContent += "\n\n⚠️ Поле user порожнє.\n" +
+            "Це означає, що WebApp є, але Telegram не передає дані користувача (особливість клієнта / платформи).";
         }
       }
-    </script>
-  </body>
+    } catch (e) {
+      out.textContent = "❌ Помилка JS: " + e.message;
+    }
+  </script>
+</body>
 </html>
