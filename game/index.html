@@ -65,26 +65,6 @@
           </div>
         </div>
 
-      <!-- 🏙 Neon City -->
-      <section class="screen" id="city">
-        <h2 class="screen-title">🏙 Neon City</h2>
-        <p class="screen-subtitle">
-          Твоє місто з неонових будівель, які генерують пасивний дохід.
-        </p>
-
-        <div class="city-panel">
-          <div class="city-header-row">
-            <span class="city-label">Місто фарму</span>
-            <span class="city-tag">LIVE PASSIVE</span>
-          </div>
-
-          <div class="city-grid" id="city-grid">
-            <!-- JS намалює будівлі за картками -->
-          </div>
-        </div>
-      </section>
-
-        
         <!-- Панель пасивного доходу -->
         <div class="panel passive-panel">
           <div class="panel-header-row">
@@ -109,6 +89,26 @@
           </div>
           <div class="passive-boost" id="passive-boost-status">
             Boost не активний
+          </div>
+        </div>
+
+      </section>
+
+      <!-- 🏙 Neon City -->
+      <section class="screen" id="city">
+        <h2 class="screen-title">🏙 Neon City</h2>
+        <p class="screen-subtitle">
+          Твоє місто з неонових будівель, які генерують пасивний дохід.
+        </p>
+
+        <div class="city-panel">
+          <div class="city-header-row">
+            <span class="city-label">Місто фарму</span>
+            <span class="city-tag">LIVE PASSIVE</span>
+          </div>
+
+          <div class="city-grid" id="city-grid">
+            <!-- JS намалює будівлі за картками -->
           </div>
         </div>
       </section>
@@ -174,17 +174,13 @@
             <span>Твої зірки:</span>
             <span class="shop-stars-value" id="shop-stars">0</span>
           </div>
-<div class="shop-stars-row">
-  <span>Твої зірки:</span>
-  <span class="shop-stars-value" id="shop-stars">0</span>
-</div>
 
-<button id="btn-buy-stars" class="btn-secondary full-width">
-  Поповнити зірки
-</button>
-<p class="shop-hint">
-  Оплата йде через Telegram Stars ⭐
-</p>
+          <button id="btn-buy-stars" class="btn-secondary full-width">
+            Поповнити зірки
+          </button>
+          <p class="shop-hint">
+            Оплата йде через Telegram Stars ⭐
+          </p>
 
           <div class="shop-list">
 
@@ -275,7 +271,8 @@
 
     </main>
 
-       <nav class="bottom-nav">
+    <!-- 🧭 Нижнє меню -->
+    <nav class="bottom-nav">
       <button data-screen="home" class="active">
         <i class="bi bi-house"></i>
         <span>Home</span>
@@ -301,7 +298,6 @@
         <span>Profile</span>
       </button>
     </nav>
-
 
   </div>
 
