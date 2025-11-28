@@ -10,6 +10,12 @@ let xp = 0;
 let level = 1;
 let currentUserId = "guest"; // за замовчуванням
 
+// softCoins (невиводимі монетки для пасиву/карток)
+let softCoins = 0;
+
+// максимальна кількість годин пасиву, яку можна накопичити разом
+const MAX_PASSIVE_HOURS = 24;
+
 // ------------------------------
 // 🔹 Елементи DOM
 // ------------------------------
@@ -23,6 +29,10 @@ const levelDisplay = document.getElementById("level");
 const usernameEl   = document.getElementById("username");
 const photoEl      = document.getElementById("userPhoto");
 const userIdEl     = document.getElementById("userId");
+
+// елементи для soft-монет
+const softBalanceEl        = document.getElementById("soft-balance");
+const profileSoftCoinsEl   = document.getElementById("profileSoftCoins");
 
 // ------------------------------
 // 🧩 Telegram WebApp інтеграція
@@ -78,8 +88,18 @@ function getTimeKey() {
   return `tapgame_last_update_${currentUserId}`;
 }
 
+// key для пасивного доходу (час останнього збору)
+function getPassiveTimeKey() {
+  return `tapgame_passive_last_claim_${currentUserId}`;
+}
+
+// key для карток
+function getCardsKey() {
+  return `tapgame_cards_${currentUserId}`;
+}
+
 function saveGame() {
-  const data = { coins, xp, level, energy };
+  const data = { coins, xp, level, energy, softCoins };
   try {
     localStorage.setItem(getSaveKey(), JSON.stringify(data));
     localStorage.setItem(getTimeKey(), Date.now().toString());
@@ -93,10 +113,11 @@ function loadGame() {
     const saved = localStorage.getItem(getSaveKey());
     if (!saved) return;
     const data = JSON.parse(saved);
-    coins  = data.coins  ?? 0;
-    xp     = data.xp     ?? 0;
-    level  = data.level  ?? 1;
-    energy = data.energy ?? maxEnergy;
+    coins     = data.coins     ?? 0;
+    xp        = data.xp        ?? 0;
+    level     = data.level     ?? 1;
+    energy    = data.energy    ?? maxEnergy;
+    softCoins = data.softCoins ?? 0;
   } catch (e) {
     console.warn("Помилка завантаження сейву:", e);
   }
@@ -160,6 +181,16 @@ function updateEnergy(animated = false) {
   }
 }
 
+// оновлення відображення soft-монет
+function updateSoftUI() {
+  if (softBalanceEl) {
+    softBalanceEl.textContent = softCoins;
+  }
+  if (profileSoftCoinsEl) {
+    profileSoftCoinsEl.textContent = softCoins;
+  }
+}
+
 // ------------------------------
 // 🔹 XP
 // ------------------------------
@@ -197,6 +228,309 @@ function spawnFlash() {
   flash.style.bottom = `${offsetY}px`;
   document.body.appendChild(flash);
   setTimeout(() => flash.remove(), 1200);
+}
+
+// ------------------------------
+// 🧠 PASIVE INCOME + CARDS
+// ------------------------------
+
+// Базові дефініції карток (мінімальний набір, потім можна розширити)
+const CARD_DEFS = {
+  miner_1: {
+    cardId: 'miner_1',
+    name: 'Майнер',
+    description: 'Видобуває монети щогодини.',
+    type: 'soft_income', // дає soft монети / год
+    rarity: 'common',
+    baseIncomePerHour: 80,
+    incomePerLevel: 20,
+    maxLevel: 10,
+    baseUpgradeCostSoft: 800,
+    upgradeCostMultiplier: 1.5
+  },
+  vault_1: {
+    cardId: 'vault_1',
+    name: 'Склад монет',
+    description: 'Додає стабільний пасивний дохід.',
+    type: 'soft_income',
+    rarity: 'common',
+    baseIncomePerHour: 50,
+    incomePerLevel: 15,
+    maxLevel: 10,
+    baseUpgradeCostSoft: 600,
+    upgradeCostMultiplier: 1.4
+  },
+  energy_lamp: {
+    cardId: 'energy_lamp',
+    name: 'Ліхтар енергії',
+    description: 'Додає енергію щодня (можна буде додати пізніше).',
+    type: 'energy_income',
+    rarity: 'common',
+    baseIncomePerHour: 0,
+    incomePerLevel: 0,
+    maxLevel: 10,
+    baseUpgradeCostSoft: 500,
+    upgradeCostMultiplier: 1.4
+  },
+  coin_magnet: {
+    cardId: 'coin_magnet',
+    name: 'Магніт монет',
+    description: '+% бонусу до пасивного доходу.',
+    type: 'bonus',
+    rarity: 'common',
+    baseIncomePerHour: 0,
+    incomePerLevel: 0,
+    baseBonusPercent: 1,
+    bonusPercentPerLevel: 0.5,
+    maxLevel: 8,
+    baseUpgradeCostSoft: 1000,
+    upgradeCostMultiplier: 1.6
+  }
+};
+
+// масив карток користувача
+let userCards = [];
+
+// завантаження карток із localStorage
+function loadUserCards() {
+  try {
+    const raw = localStorage.getItem(getCardsKey());
+    if (!raw) return [];
+    return JSON.parse(raw);
+  } catch (e) {
+    console.warn("Помилка завантаження карток:", e);
+    return [];
+  }
+}
+
+function saveUserCards() {
+  try {
+    localStorage.setItem(getCardsKey(), JSON.stringify(userCards));
+  } catch (e) {
+    console.warn("Помилка збереження карток:", e);
+  }
+}
+
+// ініціалізація стартових карток (якщо пусто)
+function initDefaultCardsIfNeeded() {
+  userCards = loadUserCards();
+
+  if (!userCards || userCards.length === 0) {
+    userCards = [
+      { cardId: 'miner_1', level: 1, acquiredAt: Date.now() },
+      { cardId: 'vault_1', level: 1, acquiredAt: Date.now() }
+    ];
+    saveUserCards();
+  }
+}
+
+// час останнього збору пасиву
+function getLastPassiveClaim() {
+  const raw = localStorage.getItem(getPassiveTimeKey());
+  if (!raw) {
+    const now = Date.now();
+    localStorage.setItem(getPassiveTimeKey(), now.toString());
+    return now;
+  }
+  const t = parseInt(raw, 10);
+  return isNaN(t) ? Date.now() : t;
+}
+
+function setLastPassiveClaim(ts) {
+  localStorage.setItem(getPassiveTimeKey(), ts.toString());
+}
+
+// розрахунок доходу з картки
+function calcCardIncome(cardDef, level) {
+  const softIncomePerHour =
+    (cardDef.baseIncomePerHour || 0) +
+    (level - 1) * (cardDef.incomePerLevel || 0);
+
+  const bonusPercent =
+    (cardDef.baseBonusPercent || 0) +
+    (level - 1) * (cardDef.bonusPercentPerLevel || 0);
+
+  return { softIncomePerHour, bonusPercent };
+}
+
+// загальний пасивний стан
+function calcPassiveState() {
+  let totalSoftIncomePerHour = 0;
+  let totalBonusPercent = 0;
+
+  for (const uc of userCards) {
+    const def = CARD_DEFS[uc.cardId];
+    if (!def) continue;
+
+    const { softIncomePerHour, bonusPercent } = calcCardIncome(def, uc.level);
+
+    if (['soft_income', 'hybrid'].includes(def.type)) {
+      totalSoftIncomePerHour += softIncomePerHour;
+    }
+    if (def.type === 'bonus') {
+      totalBonusPercent += bonusPercent;
+    }
+  }
+
+  const now = Date.now();
+  const last = getLastPassiveClaim();
+  let hours = (now - last) / 3600000;
+  if (hours < 0) hours = 0;
+  if (hours > MAX_PASSIVE_HOURS) hours = MAX_PASSIVE_HOURS;
+
+  const baseSoft = totalSoftIncomePerHour * hours;
+  const softWithBonus = baseSoft * (1 + totalBonusPercent / 100);
+
+  return {
+    totalSoftIncomePerHour,
+    totalBonusPercent,
+    unclaimedSoft: Math.floor(softWithBonus),
+    hours
+  };
+}
+
+// забрати пасив
+function claimPassive() {
+  const state = calcPassiveState();
+  if (state.unclaimedSoft <= 0) {
+    console.log("Немає накопиченого пасиву");
+    return;
+  }
+
+  softCoins += state.unclaimedSoft;
+  setLastPassiveClaim(Date.now());
+  saveGame();
+  updateSoftUI();
+  updatePassiveUI();
+}
+
+// апгрейд картки
+function upgradeCard(cardId) {
+  const def = CARD_DEFS[cardId];
+  if (!def) return;
+
+  const uc = userCards.find(c => c.cardId === cardId);
+  if (!uc) return;
+
+  if (uc.level >= def.maxLevel) {
+    console.log("Максимальний рівень картки");
+    return;
+  }
+
+  const currentLevel = uc.level;
+  const cost = Math.floor(
+    def.baseUpgradeCostSoft * Math.pow(def.upgradeCostMultiplier, currentLevel - 1)
+  );
+
+  if (softCoins < cost) {
+    console.log("Не вистачає softCoins");
+    return;
+  }
+
+  softCoins -= cost;
+  uc.level += 1;
+
+  saveGame();
+  saveUserCards();
+  updateSoftUI();
+  updatePassiveUI();
+  renderCardsList();
+}
+
+// оновлення UI панелі пасиву
+function updatePassiveUI() {
+  const state = calcPassiveState();
+
+  const elPerHour   = document.getElementById("passive-soft-per-hour");
+  const elUnclaimed = document.getElementById("passive-unclaimed");
+  const elLast      = document.getElementById("passive-last-claim");
+
+  if (elPerHour)   elPerHour.textContent   = state.totalSoftIncomePerHour;
+  if (elUnclaimed) elUnclaimed.textContent = state.unclaimedSoft;
+
+  if (elLast) {
+    const last = getLastPassiveClaim();
+    const d = new Date(last);
+    elLast.textContent = d.toLocaleString();
+  }
+
+  // паралельно оновлюємо soft-баланс
+  updateSoftUI();
+}
+
+// рендер списку карток
+function renderCardsList() {
+  const container = document.getElementById("cards-list");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  userCards.forEach(uc => {
+    const def = CARD_DEFS[uc.cardId];
+    if (!def) return;
+
+    const { softIncomePerHour, bonusPercent } = calcCardIncome(def, uc.level);
+    const currentLevel = uc.level;
+
+    const nextCost = Math.floor(
+      def.baseUpgradeCostSoft * Math.pow(def.upgradeCostSoftMultiplier || def.upgradeCostMultiplier, currentLevel - 1)
+    );
+
+    // Виправлення: якщо помилились у назві поля
+    const realCost = Math.floor(
+      def.baseUpgradeCostSoft * Math.pow(def.upgradeCostMultiplier, currentLevel - 1)
+    );
+
+    const div = document.createElement("div");
+    div.className = "card-item";
+
+    div.innerHTML = `
+      <div class="card-header">
+        <div class="card-title">${def.name}</div>
+        <div class="card-rarity card-rarity-${def.rarity}">${def.rarity}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-level">Рівень: <span>${uc.level}</span> / ${def.maxLevel}</div>
+        <div class="card-desc">${def.description}</div>
+        <div class="card-stats">
+          ${softIncomePerHour > 0 ? `<div>Пасив: +${softIncomePerHour}/год</div>` : ""}
+          ${bonusPercent > 0 ? `<div>Бонус: +${bonusPercent.toFixed(1)}%</div>` : ""}
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn-upgrade" data-card-id="${def.cardId}">
+          Покращити за ${realCost} soft
+        </button>
+      </div>
+    `;
+
+    container.appendChild(div);
+  });
+
+  // обробники натискань на "Покращити"
+  container.querySelectorAll(".btn-upgrade").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const cardId = btn.getAttribute("data-card-id");
+      upgradeCard(cardId);
+    });
+  });
+}
+
+// ініціалізація пасивної системи
+function initPassiveSystem() {
+  initDefaultCardsIfNeeded();
+  renderCardsList();
+  updatePassiveUI();
+
+  const btnClaim = document.getElementById("btn-claim-passive");
+  if (btnClaim) {
+    btnClaim.addEventListener("click", () => {
+      claimPassive();
+    });
+  }
+
+  // періодично оновлюємо панель пасиву (щоб число "накопичено" збільшувалось)
+  setInterval(updatePassiveUI, 5000);
 }
 
 // ------------------------------
@@ -252,3 +586,5 @@ restoreEnergyAfterPause();
 renderCoins();
 renderXP();
 updateEnergy();
+updateSoftUI();
+initPassiveSystem();
