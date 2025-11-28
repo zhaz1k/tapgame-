@@ -836,9 +836,7 @@ function renderCardsList() {
         </div>
       </div>
       <div class="card-footer">
-        <button class="btn-upgrade" data-card-id="${def.cardId}">
-          Покращити за ${cost} soft
-        </button>
+        <button class="btn-upgrade" data-card-id="${def.cardId}">Покращити за ${cost} soft</button>
       </div>
     `;
 
@@ -907,7 +905,6 @@ function renderCity() {
     const building = document.createElement("div");
     building.className = `city-building city-rarity-${def.rarity}`;
 
-    // будуємо внутрішню структуру
     const header = document.createElement("div");
     header.className = "city-building-header";
     header.innerHTML = `
@@ -1061,11 +1058,11 @@ function initShop() {
   const btnBuyStars = document.getElementById("btn-buy-stars");
   if (btnBuyStars) {
     btnBuyStars.addEventListener("click", () => {
-      // якщо ми всередині Telegram
       if (tg) {
+        // у проді тут відкриваєш свій бот / інвойс
         tg.openTelegramLink("https://t.me/donet_app_bot?start=buy_stars");
       } else {
-        // 🔧 DEV-режим у браузері: даємо тестові зірки
+        // 🔧 DEV-режим у браузері
         stars += 10;
         saveGame();
         updateStarsUI();
