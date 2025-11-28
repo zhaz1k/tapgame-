@@ -15,7 +15,42 @@
     <!-- 🏠 Головна -->
     <div class="screen active" id="home">
       <h1 class="balance">💰 <span id="coins">0</span></h1>
+      <!-- невиводимі монети (soft), які дає пасив -->
+      <div class="soft-balance-row">
+        <span class="soft-label">Soft монети:</span>
+        <span class="soft-value" id="soft-balance">0</span>
+      </div>
+
       <button id="tapButton">TAP</button>
+
+      <!-- ⚡ Пасивний дохід -->
+      <div class="panel passive-panel">
+        <h2>Пасивний дохід</h2>
+        <div class="passive-row">
+          <div>
+            <div class="label">Пасив / годину</div>
+            <div class="value" id="passive-soft-per-hour">0</div>
+          </div>
+          <div>
+            <div class="label">Накопичено</div>
+            <div class="value" id="passive-unclaimed">0</div>
+          </div>
+        </div>
+        <button id="btn-claim-passive" class="btn-primary">
+          Забрати пасив
+        </button>
+        <div class="passive-last">
+          Останній збір: <span id="passive-last-claim">—</span>
+        </div>
+      </div>
+
+      <!-- 🃏 Картки пасивного доходу -->
+      <div class="panel cards-panel">
+        <h2>Картки пасивного доходу</h2>
+        <div id="cards-list" class="cards-list">
+          <!-- Карти рендеритимуться через JS -->
+        </div>
+      </div>
     </div>
 
     <!-- 🎯 Завдання -->
@@ -47,6 +82,7 @@
         <p>💎 Рівень: <span id="level">1</span></p>
         <p>⚙️ Досвід: <span id="xp">0</span> / 100 XP</p>
         <p>💰 Баланс: <span id="profileCoins">0</span> монет</p>
+        <p>🪙 Soft монети: <span id="profileSoftCoins">0</span></p>
       </div>
     </div>
 
