@@ -25,7 +25,7 @@
           <div id="userId" class="top-userid">ID: —</div>
         </div>
       </div>
-            <div class="top-right">
+      <div class="top-right">
         <div class="top-balance-label">Баланс</div>
         <div class="top-balance-value">
           💰 <span id="coins">0</span>
@@ -34,7 +34,6 @@
           ⭐ <span id="starsBalance">0</span>
         </div>
       </div>
-
     </header>
 
     <!-- ⚡ Прогрес-бар енергії -->
@@ -82,25 +81,14 @@
               <div class="value" id="passive-unclaimed">0</div>
             </div>
           </div>
-                 <button id="btn-claim-passive" class="btn-primary">
-          Забрати пасив
-        </button>
-        <div class="passive-last">
-          Останній збір: <span id="passive-last-claim">—</span>
-        </div>
-        <div class="passive-boost" id="passive-boost-status">
-          Boost не активний
-        </div>
-
-
-        <!-- Картки пасивного доходу -->
-        <div class="panel cards-panel">
-          <div class="panel-header-row">
-            <h2>Картки пасивного доходу</h2>
-            <span class="panel-tag panel-tag-purple">UPGRADE ⬆️</span>
+          <button id="btn-claim-passive" class="btn-primary">
+            Забрати пасив
+          </button>
+          <div class="passive-last">
+            Останній збір: <span id="passive-last-claim">—</span>
           </div>
-          <div id="cards-list" class="cards-list">
-            <!-- JS сюди намалює картки -->
+          <div class="passive-boost" id="passive-boost-status">
+            Boost не активний
           </div>
         </div>
       </section>
@@ -138,7 +126,7 @@
       </section>
 
       <!-- 🚀 Airdrop -->
-           <section class="screen" id="airdrop">
+      <section class="screen" id="airdrop">
         <h2 class="screen-title">🚀 Airdrop</h2>
         <p class="screen-subtitle">Готуйся, скоро тут буде основний роздачний движ</p>
 
@@ -213,6 +201,23 @@
         </div>
       </section>
 
+      <!-- 🃏 Картки -->
+      <section class="screen" id="cards">
+        <h2 class="screen-title">🃏 Картки пасивного доходу</h2>
+        <p class="screen-subtitle">
+          Прокачуй картки, щоб збільшувати свій пасивний дохід та бонуси.
+        </p>
+
+        <div class="panel cards-panel">
+          <div class="panel-header-row">
+            <h2>Картки</h2>
+            <span class="panel-tag panel-tag-purple">UPGRADE ⬆️</span>
+          </div>
+          <div id="cards-list" class="cards-list">
+            <!-- JS сюди намалює картки -->
+          </div>
+        </div>
+      </section>
 
       <!-- 👤 Профіль -->
       <section class="screen" id="profile">
@@ -227,7 +232,7 @@
           <p id="userId"></p>
         </div>
 
-                <div class="profile-stats">
+        <div class="profile-stats">
           <p>💎 Рівень: <span id="level">1</span></p>
           <p>⚙️ Досвід: <span id="xp">0</span> / 100 XP</p>
           <p>💰 Баланс: <span id="profileCoins">0</span> монет</p>
@@ -252,6 +257,10 @@
       <button data-screen="airdrop">
         <i class="bi bi-rocket-takeoff"></i>
         <span>Airdrop</span>
+      </button>
+      <button data-screen="cards">
+        <i class="bi bi-collection"></i>
+        <span>Cards</span>
       </button>
       <button data-screen="profile">
         <i class="bi bi-person"></i>
