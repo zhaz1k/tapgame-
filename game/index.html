@@ -138,7 +138,7 @@
       </section>
 
       <!-- 🚀 Airdrop -->
-      <section class="screen" id="airdrop">
+           <section class="screen" id="airdrop">
         <h2 class="screen-title">🚀 Airdrop</h2>
         <p class="screen-subtitle">Готуйся, скоро тут буде основний роздачний движ</p>
 
@@ -154,7 +154,65 @@
             <li>✅ Клич друзів в гру</li>
           </ul>
         </div>
+
+        <!-- 🛒 Boost Shop -->
+        <div class="panel shop-panel">
+          <div class="panel-header-row">
+            <h2>Boost Shop</h2>
+            <span class="panel-tag panel-tag-gold">DONATE ⭐</span>
+          </div>
+
+          <div class="shop-stars-row">
+            <span>Твої зірки:</span>
+            <span class="shop-stars-value" id="shop-stars">0</span>
+          </div>
+
+          <div class="shop-list">
+
+            <div class="shop-item">
+              <div class="shop-item-info">
+                <div class="shop-item-title">⚡ Energy Boost +250</div>
+                <div class="shop-item-desc">Миттєво додає 250 енергії (але не більше максимуму).</div>
+              </div>
+              <button class="shop-buy-btn" data-product-id="energy_250">10 ⭐</button>
+            </div>
+
+            <div class="shop-item">
+              <div class="shop-item-info">
+                <div class="shop-item-title">🌀 x2 Пасив на 1 год</div>
+                <div class="shop-item-desc">Подвоює пасивний дохід на 60 хвилин.</div>
+              </div>
+              <button class="shop-buy-btn" data-product-id="passive_x2_1h">20 ⭐</button>
+            </div>
+
+            <div class="shop-item">
+              <div class="shop-item-info">
+                <div class="shop-item-title">🔥 x5 Пасив на 30 хв</div>
+                <div class="shop-item-desc">Серйозний буст для хайпового фарму.</div>
+              </div>
+              <button class="shop-buy-btn" data-product-id="passive_x5_30m">35 ⭐</button>
+            </div>
+
+            <div class="shop-item">
+              <div class="shop-item-info">
+                <div class="shop-item-title">👑 VIP 24h</div>
+                <div class="shop-item-desc">+20% до всього пасиву на 24 години.</div>
+              </div>
+              <button class="shop-buy-btn" data-product-id="vip_24h">50 ⭐</button>
+            </div>
+
+            <div class="shop-item">
+              <div class="shop-item-info">
+                <div class="shop-item-title">🎁 Mystery Box</div>
+                <div class="shop-item-desc">Випадкова картка або +рівень існуючої.</div>
+              </div>
+              <button class="shop-buy-btn" data-product-id="box_random_card">40 ⭐</button>
+            </div>
+
+          </div>
+        </div>
       </section>
+
 
       <!-- 👤 Профіль -->
       <section class="screen" id="profile">
@@ -169,12 +227,14 @@
           <p id="userId"></p>
         </div>
 
-        <div class="profile-stats">
+                <div class="profile-stats">
           <p>💎 Рівень: <span id="level">1</span></p>
           <p>⚙️ Досвід: <span id="xp">0</span> / 100 XP</p>
           <p>💰 Баланс: <span id="profileCoins">0</span> монет</p>
           <p>🪙 Soft монети: <span id="profileSoftCoins">0</span></p>
+          <p>⭐ Stars: <span id="profileStars">0</span></p>
         </div>
+
       </section>
 
     </main>
