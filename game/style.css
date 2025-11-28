@@ -802,211 +802,197 @@ body::before {
 }
 
 /* 🏙 NEON CITY */
+
+/* 🏙 NEON CITY WRAPPER */
 .city-panel {
-  margin: 16px auto 90px;
-  max-width: 420px;
-  background: radial-gradient(circle at 20% 0%, rgba(0,255,255,0.18), rgba(15,18,40,0.95));
-  border-radius: 18px;
-  padding: 14px 12px 16px;
-  border: 1px solid rgba(0,255,255,0.18);
+  margin-top: 16px;
+  padding: 14px 12px 18px;
+  border-radius: 16px;
+  background: radial-gradient(circle at 0% 0%, rgba(0, 255, 255, 0.08), transparent 60%),
+              radial-gradient(circle at 100% 100%, rgba(255, 0, 150, 0.08), transparent 60%),
+              rgba(8, 10, 25, 0.95);
+  border: 1px solid rgba(0, 255, 255, 0.25);
   box-shadow:
-    0 0 18px rgba(0, 255, 255, 0.25),
-    0 0 40px rgba(160, 60, 255, 0.2);
-  position: relative;
-  overflow: hidden;
+    0 0 18px rgba(0, 0, 0, 0.7),
+    0 0 16px rgba(0, 255, 255, 0.2);
 }
 
-.city-panel::before {
-  content: "";
-  position: absolute;
-  inset: -40%;
-  background:
-    radial-gradient(circle at 0% 0%, rgba(0,255,255,0.15), transparent 55%),
-    radial-gradient(circle at 100% 100%, rgba(255,0,255,0.18), transparent 60%);
-  opacity: 0.7;
-  pointer-events: none;
-}
-
+/* Заголовок панелі міста */
 .city-header-row {
-  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
-  z-index: 1;
 }
 
 .city-label {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  color: #a7fffb;
-  text-shadow: 0 0 8px rgba(0,255,255,0.8);
+  color: #d0f7ff;
+  opacity: 0.85;
 }
 
 .city-tag {
   font-size: 0.7rem;
+  text-transform: uppercase;
   padding: 4px 8px;
   border-radius: 999px;
-  background: rgba(0,0,0,0.75);
-  border: 1px solid rgba(0,255,255,0.4);
-  color: #ffffff;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  background: linear-gradient(135deg, #00f6ff, #7b5cff);
+  color: #020310;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
 }
 
-/* Сітка міста */
+/* 🧱 GRID МІСТА */
 .city-grid {
-  position: relative;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 8px;
-  z-index: 1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 6px;
 }
 
-/* Плитка-будівля */
+/* Карточка-будівля */
 .city-building {
   position: relative;
-  height: 90px;
-  border-radius: 12px;
-  padding: 6px 7px;
-  background: linear-gradient(145deg, rgba(7,10,25,0.95), rgba(20,16,45,0.95));
+  padding: 8px 8px 10px;
+  border-radius: 14px;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow:
-    0 0 15px rgba(0, 0, 0, 0.7),
-    0 0 20px rgba(0, 0, 0, 0.8);
+  background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.06), transparent 60%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 14px rgba(0, 0, 0, 0.9);
   transform: translateY(0);
-  transition: transform 0.18s ease-out, box-shadow 0.2s ease-out, border 0.2s ease-out;
+  transition: transform 0.16s ease-out, box-shadow 0.16s ease-out, border-color 0.16s ease-out;
 }
 
 .city-building::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 80%);
-  z-index: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 255, 0.12),
+    transparent 40%,
+    rgba(255, 0, 180, 0.12)
+  );
+  mix-blend-mode: screen;
+  opacity: 0.7;
+  pointer-events: none;
 }
 
-/* Верхній рядок (назва + тип) */
+.city-building:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 0 18px rgba(0, 0, 0, 0.9),
+    0 0 18px rgba(0, 255, 255, 0.4);
+  border-color: rgba(0, 255, 255, 0.6);
+}
+
+/* Рідкість – ободок та легкий відтінок */
+.city-rarity-common {
+  border-color: rgba(180, 180, 180, 0.6);
+}
+.city-rarity-rare {
+  border-color: rgba(0, 174, 255, 0.8);
+  box-shadow: 0 0 12px rgba(0, 174, 255, 0.4);
+}
+.city-rarity-epic {
+  border-color: rgba(168, 85, 247, 0.9);
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.5);
+}
+.city-rarity-legendary {
+  border-color: rgba(255, 196, 0, 0.95);
+  box-shadow: 0 0 18px rgba(255, 196, 0, 0.55);
+}
+
+/* Хедер будівлі */
 .city-building-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 6px;
+  position: relative;
   z-index: 1;
 }
 
 .city-building-name {
-  font-size: 0.7rem;
-  font-weight: 600;
-  max-width: 70%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #f6fbff;
 }
 
 .city-building-type {
-  font-size: 0.6rem;
-  display: inline-flex;
-  align-items: center;
+  display: flex;
   gap: 4px;
+  align-items: center;
+  font-size: 0.66rem;
+  opacity: 0.9;
   padding: 2px 6px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(4, 11, 30, 0.9);
+  border: 1px solid rgba(0, 255, 255, 0.4);
 }
 
-.city-building-type span {
-  font-size: 0.65rem;
-}
-
-/* Центральна "панелька вікон" */
+/* Тіло будівлі (вікна) */
 .city-building-body {
-  flex: 1;
+  position: relative;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: 6px;
   gap: 3px;
-  margin: 5px 0;
-  z-index: 1;
+  padding: 6px 3px 6px;
+  margin-bottom: 6px;
 }
 
 .city-window {
-  border-radius: 2px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  background: radial-gradient(circle at 30% 0%, #fffae6, #fbbf24);
+  box-shadow: 0 0 8px rgba(252, 211, 77, 0.9);
   opacity: 0.9;
-  animation: cityWindows 2.5s infinite ease-in-out;
+  animation: windowBlink 2.4s infinite ease-in-out;
 }
 
+/* Легкий рандомний десинк по анімації вікон */
 .city-window:nth-child(3n) {
-  animation-delay: 0.4s;
+  animation-delay: 0.2s;
 }
 .city-window:nth-child(4n) {
-  animation-delay: 0.8s;
+  animation-delay: 0.6s;
+}
+.city-window:nth-child(5n) {
+  animation-delay: 1s;
 }
 
-/* Нижній рядок: пасив/рівень */
+@keyframes windowBlink {
+  0%, 100% { opacity: 0.95; box-shadow: 0 0 8px rgba(252, 211, 77, 1); }
+  40%      { opacity: 0.4;  box-shadow: 0 0 2px rgba(252, 211, 77, 0.3); }
+  60%      { opacity: 0.8;  box-shadow: 0 0 10px rgba(252, 211, 77, 1); }
+}
+
+/* Футер будівлі */
 .city-building-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.65rem;
+  font-size: 0.7rem;
+  color: #d7f9ff;
+  position: relative;
   z-index: 1;
 }
 
 .city-building-level {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .city-building-income {
+  font-size: 0.68rem;
   opacity: 0.9;
 }
 
-/* Ховер / тап */
-.city-building:active {
-  transform: translateY(1px) scale(0.98);
-  box-shadow:
-    0 0 5px rgba(0, 0, 0, 0.7),
-    0 0 12px rgba(0, 255, 255, 0.4);
+/* Трохи відступів для City-екрана на мобілі */
+#city.screen {
+  padding-top: 26px;
 }
 
-/* Раритети — кольори обводки і вікон */
-
-.city-rarity-common {
-  border: 1px solid rgba(160, 160, 255, 0.35);
-}
-.city-rarity-common .city-window {
-  background: rgba(133, 197, 255, 0.85);
-}
-
-.city-rarity-rare {
-  border: 1px solid rgba(0, 219, 255, 0.6);
-  box-shadow: 0 0 14px rgba(0, 219, 255, 0.3);
-}
-.city-rarity-rare .city-window {
-  background: rgba(0, 245, 255, 0.9);
-}
-
-.city-rarity-epic {
-  border: 1px solid rgba(203, 108, 255, 0.7);
-  box-shadow: 0 0 16px rgba(203, 108, 255, 0.5);
-}
-.city-rarity-epic .city-window {
-  background: rgba(255, 170, 255, 0.95);
-}
-
-.city-rarity-legendary {
-  border: 1px solid rgba(255, 215, 0, 0.9);
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
-}
-.city-rarity-legendary .city-window {
-  background: rgba(255, 244, 180, 0.98);
-}
-
-/* Анімація вогників у вікнах */
-@keyframes cityWindows {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; }
-}
 
