@@ -74,7 +74,7 @@ body::before {
 /* 💰 Баланс */
 .balance {
   font-size: 1.4rem;
-  margin: 30px 0 20px;
+  margin: 30px 0 10px;
 }
 
 /* 🟢 Кнопка TAP */
@@ -252,9 +252,6 @@ body::before {
   transition: transform 0.15s ease, color 0.2s ease;
 }
 
-
-
-
 /* ⚡ Анімація блискавки при відновленні енергії */
 .energy-flash {
   position: fixed;
@@ -283,6 +280,7 @@ body::before {
     opacity: 0;
   }
 }
+
 /* 🔴 Ефект пульсації енергії при <10% */
 @keyframes pulseEnergy {
   0%, 100% {
@@ -391,4 +389,207 @@ body::before {
 .profile-stats span {
   color: #00f6ff;
   font-weight: 700;
+}
+
+/* ============================= */
+/* 🪙 SOFT-БАЛАНС ПІД ГОЛОВНИМ   */
+/* ============================= */
+
+.soft-balance-row {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 16px;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.soft-label {
+  color: #9ba0c0;
+}
+
+.soft-value {
+  color: #ffb84c;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(255, 184, 76, 0.7);
+}
+
+/* ============================= */
+/* 🧊 ПАНЕЛІ (ПАСИВ + КАРТКИ)   */
+/* ============================= */
+
+.panel {
+  background: rgba(15, 18, 35, 0.95);
+  border-radius: 16px;
+  padding: 14px 12px;
+  margin: 12px 0;
+  border: 1px solid rgba(0, 255, 198, 0.15);
+  box-shadow:
+    0 0 12px rgba(0, 0, 0, 0.6),
+    0 0 18px rgba(0, 255, 198, 0.12);
+}
+
+.panel h2 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  color: #00ffc6;
+  text-align: left;
+  text-shadow: 0 0 8px rgba(0, 255, 198, 0.7);
+}
+
+.passive-panel {
+  margin-top: 18px;
+}
+
+.cards-panel {
+  margin-bottom: 10px;
+}
+
+/* 📈 Пасивний дохід — всередині панелі */
+
+.passive-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.passive-row .label {
+  font-size: 0.75rem;
+  color: #9ba0c0;
+}
+
+.passive-row .value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Кнопка "Забрати пасив" */
+.btn-primary {
+  width: 100%;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(120deg, #00ffc6, #00a6ff);
+  color: #0c0c16;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 0 14px rgba(0, 255, 198, 0.8);
+  transition: transform 0.08s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-primary:active {
+  transform: scale(0.96);
+  box-shadow: 0 0 8px rgba(0, 255, 198, 0.5);
+}
+
+.passive-last {
+  margin-top: 6px;
+  font-size: 0.7rem;
+  color: #9ba0c0;
+  text-align: left;
+}
+
+/* ============================= */
+/* 🃏 КАРТКИ ПАСИВНОГО ДОХОДУ    */
+/* ============================= */
+
+.cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-item {
+  background: radial-gradient(circle at 0% 0%, rgba(0, 255, 198, 0.16), transparent 60%),
+              #151731;
+  border-radius: 12px;
+  padding: 10px 10px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 14px rgba(0, 0, 0, 0.6);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.card-rarity {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Рідкості */
+.card-rarity-common {
+  background: rgba(255, 255, 255, 0.08);
+  color: #d0d4ff;
+}
+
+.card-rarity-rare {
+  background: rgba(0, 166, 255, 0.2);
+  color: #00a6ff;
+}
+
+.card-rarity-epic {
+  background: rgba(176, 60, 255, 0.2);
+  color: #b03cff;
+}
+
+.card-rarity-legendary {
+  background: rgba(255, 184, 76, 0.25);
+  color: #ffb84c;
+}
+
+.card-level {
+  font-size: 0.8rem;
+  color: #d0d4ff;
+  margin-bottom: 4px;
+}
+
+.card-desc {
+  font-size: 0.75rem;
+  color: #a4a8d4;
+  margin-bottom: 4px;
+}
+
+.card-stats div {
+  font-size: 0.78rem;
+  color: #ffffff;
+}
+
+.card-footer {
+  margin-top: 6px;
+}
+
+.card-footer .btn-upgrade {
+  width: 100%;
+  border-radius: 999px;
+  padding: 7px 10px;
+  border: none;
+  background: linear-gradient(120deg, #ffb84c, #ff3afb);
+  color: #0c0c16;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 184, 76, 0.7);
+  transition: transform 0.08s ease, box-shadow 0.15s ease;
+}
+
+.card-footer .btn-upgrade:active {
+  transform: scale(0.96);
+  box-shadow: 0 0 6px rgba(255, 184, 76, 0.5);
 }
