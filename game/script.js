@@ -765,6 +765,7 @@ function upgradeCard(cardId) {
   updateSoftUI();
   updatePassiveUI();
   renderCardsList();
+  renderCity();
 }
 
 // оновлення UI панелі пасиву
@@ -853,10 +854,103 @@ function renderCardsList() {
   });
 }
 
+// 🏙 рендер NEON CITY
+function renderCity() {
+  const cityGrid = document.getElementById("city-grid");
+  if (!cityGrid) return;
+
+  cityGrid.innerHTML = "";
+
+  // Мапа для порядку раритетів
+  const rarityOrder = { legendary: 0, epic: 1, rare: 2, common: 3 };
+
+  // Сортуємо картки: спочатку більш рідкісні та жирні
+  const sorted = [...userCards].sort((a, b) => {
+    const defA = CARD_DEFS[a.cardId];
+    const defB = CARD_DEFS[b.cardId];
+    if (!defA || !defB) return 0;
+
+    const rA = rarityOrder[defA.rarity] ?? 99;
+    const rB = rarityOrder[defB.rarity] ?? 99;
+
+    if (rA !== rB) return rA - rB;
+
+    // якщо однаковий раритет — сортуємо за теор. доходом
+    const incA = calcCardIncome(defA, a.level).softIncomePerHour;
+    const incB = calcCardIncome(defB, b.level).softIncomePerHour;
+    return incB - incA;
+  });
+
+  sorted.forEach(uc => {
+    const def = CARD_DEFS[uc.cardId];
+    if (!def) return;
+
+    const { softIncomePerHour } = calcCardIncome(def, uc.level);
+
+    // визначаємо тип
+    let typeLabel = "";
+    let typeIcon = "";
+    if (def.type === "soft_income") {
+      typeLabel = "Soft";
+      typeIcon = "🪙";
+    } else if (def.type === "energy_income") {
+      typeLabel = "Energy";
+      typeIcon = "⚡";
+    } else if (def.type === "bonus") {
+      typeLabel = "Bonus";
+      typeIcon = "%";
+    } else if (def.type === "hybrid") {
+      typeLabel = "Hybrid";
+      typeIcon = "🌀";
+    }
+
+    const building = document.createElement("div");
+    building.className = `city-building city-rarity-${def.rarity}`;
+
+    // будуємо внутрішню структуру
+    const header = document.createElement("div");
+    header.className = "city-building-header";
+    header.innerHTML = `
+      <div class="city-building-name">${def.name}</div>
+      <div class="city-building-type">
+        <span>${typeIcon}</span>
+        <span>${typeLabel}</span>
+      </div>
+    `;
+
+    const body = document.createElement("div");
+    body.className = "city-building-body";
+
+    // робимо "вікна"
+    const windowsCount = 9;
+    for (let i = 0; i < windowsCount; i++) {
+      const w = document.createElement("div");
+      w.className = "city-window";
+      body.appendChild(w);
+    }
+
+    const footer = document.createElement("div");
+    footer.className = "city-building-footer";
+    footer.innerHTML = `
+      <div class="city-building-level">Lv.${uc.level}</div>
+      <div class="city-building-income">
+        ${softIncomePerHour > 0 ? `+${softIncomePerHour}/год` : ""}
+      </div>
+    `;
+
+    building.appendChild(header);
+    building.appendChild(body);
+    building.appendChild(footer);
+
+    cityGrid.appendChild(building);
+  });
+}
+
 // ініціалізація пасивної системи
 function initPassiveSystem() {
   initDefaultCardsIfNeeded();
   renderCardsList();
+  renderCity();
   updatePassiveUI();
 
   const btnClaim = document.getElementById("btn-claim-passive");
@@ -921,6 +1015,8 @@ function giveRandomCardFromBox() {
     softCoins += 500;
   }
   saveUserCards();
+  renderCardsList();
+  renderCity();
 }
 
 function buyProduct(productId) {
@@ -949,6 +1045,7 @@ function buyProduct(productId) {
   updateStarsUI();
   updatePassiveUI();
   renderCardsList();
+  renderCity();
 }
 
 function initShop() {
@@ -966,20 +1063,7 @@ function initShop() {
     btnBuyStars.addEventListener("click", () => {
       // якщо ми всередині Telegram
       if (tg) {
-        // 🔹 ВАРІАНТ 1: просто відкриваємо бота з параметром
         tg.openTelegramLink("https://t.me/donet_app_bot?start=buy_stars");
-
-        // 🔹 ВАРІАНТ 2 (коли в тебе буде бекенд): 
-        // робиш fetch на свій сервер, отримуєш invoice link
-        // і викликаєш tg.openInvoice(invoiceLink)
-        //
-        // fetch("/api/create-stars-invoice?pack=small")
-        //   .then(r => r.json())
-        //   .then(data => {
-        //     if (data.invoice_link) {
-        //       tg.openInvoice(data.invoice_link);
-        //     }
-        //   });
       } else {
         // 🔧 DEV-режим у браузері: даємо тестові зірки
         stars += 10;
@@ -992,7 +1076,6 @@ function initShop() {
 
   updateStarsUI();
 }
-
 
 // ------------------------------
 // 🖱️ TAP
@@ -1051,3 +1134,4 @@ updateSoftUI();
 updateStarsUI();
 initPassiveSystem();
 initShop();
+renderCity();
