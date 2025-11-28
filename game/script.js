@@ -960,8 +960,39 @@ function initShop() {
     });
   });
 
+  // 👉 поповнення зірок
+  const btnBuyStars = document.getElementById("btn-buy-stars");
+  if (btnBuyStars) {
+    btnBuyStars.addEventListener("click", () => {
+      // якщо ми всередині Telegram
+      if (tg) {
+        // 🔹 ВАРІАНТ 1: просто відкриваємо бота з параметром
+        tg.openTelegramLink("https://t.me/donet_app_bot?start=buy_stars");
+
+        // 🔹 ВАРІАНТ 2 (коли в тебе буде бекенд): 
+        // робиш fetch на свій сервер, отримуєш invoice link
+        // і викликаєш tg.openInvoice(invoiceLink)
+        //
+        // fetch("/api/create-stars-invoice?pack=small")
+        //   .then(r => r.json())
+        //   .then(data => {
+        //     if (data.invoice_link) {
+        //       tg.openInvoice(data.invoice_link);
+        //     }
+        //   });
+      } else {
+        // 🔧 DEV-режим у браузері: даємо тестові зірки
+        stars += 10;
+        saveGame();
+        updateStarsUI();
+        console.log("DEV: додано 10 зірок (браузерний режим)");
+      }
+    });
+  }
+
   updateStarsUI();
 }
+
 
 // ------------------------------
 // 🖱️ TAP
