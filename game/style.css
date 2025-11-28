@@ -13,7 +13,7 @@ html, body {
   height: 100%;
   overflow: hidden;
   background: radial-gradient(circle at 30% 30%, #10121a, #07080f 80%);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   color: #fff;
 }
 
@@ -21,12 +21,10 @@ html, body {
 body::before {
   content: "";
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 20% 20%, rgba(0,255,255,0.1), transparent 60%),
-              radial-gradient(circle at 80% 80%, rgba(255,0,255,0.1), transparent 60%);
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(0,255,255,0.12), transparent 60%),
+    radial-gradient(circle at 80% 80%, rgba(255,0,255,0.12), transparent 60%);
   background-size: 200% 200%;
   animation: slowMove 25s ease-in-out infinite;
   z-index: 0;
@@ -46,136 +44,257 @@ body::before {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   z-index: 1;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(8px);
+  background: linear-gradient(160deg, rgba(0,0,0,0.65), rgba(4,8,20,0.9));
+  backdrop-filter: blur(14px);
+}
+
+/* 🔝 Верхній бар */
+.top-bar {
+  height: 64px;
+  padding: 10px 14px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: linear-gradient(120deg, rgba(8,15,35,0.9), rgba(10,25,50,0.9));
+}
+
+.top-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.top-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid #00f6ff;
+  box-shadow: 0 0 10px rgba(0,255,255,0.6);
+  object-fit: cover;
+}
+
+.top-user {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.top-username {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e9f7ff;
+}
+
+.top-userid {
+  font-size: 0.7rem;
+  color: #9ea7c7;
+}
+
+.top-right {
+  text-align: right;
+}
+
+.top-balance-label {
+  font-size: 0.7rem;
+  color: #9ba0c0;
+}
+
+.top-balance-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #00ffc6;
+  text-shadow: 0 0 8px rgba(0,255,198,0.8);
+}
+
+/* ⚡ Енергія */
+.energy-wrapper {
+  padding: 6px 14px 4px;
+}
+
+.energy-progress {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0,255,255,0.25);
+}
+
+#energy-bar {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  background: linear-gradient(90deg, #00f6ff, #00ff99);
+  border-radius: 999px;
+  transition: width 0.25s ease, background 0.3s ease;
+}
+
+#energy-label {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: block;
+  text-align: center;
+  font-size: 0.7rem;
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-shadow:
+    0 0 3px rgba(0, 0, 0, 0.8),
+    0 0 6px rgba(0, 0, 0, 0.6),
+    0 0 8px rgba(0, 255, 255, 0.4);
+}
+
+/* ⚡ Анімація блискавки при відновленні енергії */
+.energy-flash {
+  position: fixed;
+  bottom: 88px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.85rem;
+  color: #00f6ff;
+  text-shadow: 0 0 6px #00ffff, 0 0 12px #0077ff;
+  opacity: 0;
+  animation: flashUp 1.2s ease-out forwards;
+  pointer-events: none;
+  z-index: 30;
+}
+
+@keyframes flashUp {
+  0% {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+  70% {
+    transform: translate(-50%, -12px);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-50%, -22px);
+    opacity: 0;
+  }
 }
 
 /* 📱 Екрани */
+.screens {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
 .screen {
   display: none;
-  flex: 1;
-  text-align: center;
-  padding: 30px 16px 90px;
+  height: calc(100% - 0px);
+  padding: 12px 14px 90px;
   overflow-y: auto;
 }
 
 .screen.active {
   display: block;
-  animation: fadeIn 0.4s ease;
+  animation: fadeIn 0.35s ease;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* 💰 Баланс */
-.balance {
-  font-size: 1.4rem;
-  margin: 30px 0 10px;
+/* 🏷 Заголовки екранів */
+.screen-title {
+  font-size: 1.2rem;
+  margin: 6px 0 4px;
+}
+
+.screen-subtitle {
+  font-size: 0.8rem;
+  color: #a2a8d5;
+  margin-bottom: 14px;
+}
+
+/* 🪙 Soft-баланс на Home */
+.soft-balance-row {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  opacity: 0.95;
+}
+
+.soft-label {
+  color: #9ba0c0;
+}
+
+.soft-value {
+  color: #ffb84c;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(255, 184, 76, 0.8);
+}
+
+/* 🔘 TAP-зона */
+.tap-zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0 14px;
+}
+
+.tap-ring-outer {
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(0,255,255,0.25), rgba(0,0,0,0.8));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 25px rgba(0,255,255,0.35),
+    0 0 60px rgba(0,0,0,0.8);
+}
+
+.tap-ring-inner {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  padding: 6px;
+  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.2), rgba(0,0,0,0.9));
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 🟢 Кнопка TAP */
 #tapButton {
-  width: 150px;
-  height: 150px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   border: none;
-  background: linear-gradient(145deg, #00f6ff, #0077ff);
-  box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
+  background: conic-gradient(from 200deg, #00f6ff, #0077ff, #b03cff, #00f6ff);
+  box-shadow:
+    0 0 25px rgba(0, 255, 255, 0.6),
+    0 0 40px rgba(0, 0, 0, 0.8);
   color: white;
-  font-size: 1.2rem;
-  font-weight: 600;
-  transition: transform 0.1s ease, box-shadow 0.2s ease;
-  animation: pulse 2s ease-in-out infinite;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 0 0 4px rgba(0,0,0,0.7);
+  transition: transform 0.08s ease, box-shadow 0.15s ease, filter 0.15s ease;
+  animation: tapPulse 2.2s ease-in-out infinite;
 }
 
-@keyframes pulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(0,255,255,0.3); }
-  50% { box-shadow: 0 0 35px rgba(0,255,255,0.8); }
+@keyframes tapPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 18px rgba(0,255,255,0.4); }
+  50%      { transform: scale(1.06); box-shadow: 0 0 30px rgba(0,255,255,0.9); }
 }
 
 #tapButton:active {
   transform: scale(0.94);
-}
-
-/* 🎯 Завдання */
-.task-list {
-  list-style: none;
-  padding: 0;
-}
-
-.task-list li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(255,255,255,0.05);
-  padding: 14px 12px;
-  border-radius: 10px;
-  margin-bottom: 10px;
-}
-
-.claim {
-  background: linear-gradient(135deg, #00f6ff, #0077ff);
-  border: none;
-  color: #000;
-  font-weight: bold;
-  border-radius: 8px;
-  padding: 6px 12px;
-}
-
-/* 🧭 Нижнє меню */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 70px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background: #0b0f1e;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  z-index: 10;
-  margin: 0;
-  padding: 0;
-}
-
-.bottom-nav button {
-  flex: 1;
-  height: 100%;
-  border: none;
-  background: none;
-  color: #888;
-  font-size: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transition: 0.2s ease;
-}
-
-.bottom-nav button span {
-  font-size: 0.65rem;
-  margin-top: 2px;
-  letter-spacing: 0.5px;
-}
-
-.bottom-nav button.active {
-  color: #00f6ff;
-  text-shadow: 0 0 6px #00f6ff;
-}
-
-/* 🔒 Меню чітко притиснуте до низу навіть на iPhone */
-.bottom-nav::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: env(safe-area-inset-bottom);
-  background: #0b0f1e;
+  box-shadow: 0 0 10px rgba(0,255,255,0.4);
 }
 
 /* 💰 Анімація монет */
@@ -186,7 +305,7 @@ body::before {
   background: url("https://cdn-icons-png.flaticon.com/512/138/138292.png") no-repeat center;
   background-size: cover;
   left: 50%;
-  top: 50%;
+  top: 52%;
   transform: translate(-50%, -50%) scale(0.8);
   animation: coinFly 1.2s ease-out forwards;
   z-index: 9999;
@@ -208,245 +327,56 @@ body::before {
   }
 }
 
-/* ⚡ Стабільний прогрес-бар енергії */
-.energy-progress {
-  position: fixed;
-  bottom: 80px;
-  left: 14px;
-  width: 140px;
-  height: 14px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  overflow: hidden;
-  z-index: 20;
-  box-shadow: 0 0 6px rgba(0, 255, 255, 0.3);
-}
-
-#energy-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(90deg, #00f6ff, #0077ff);
-  border-radius: 10px;
-  transition: width 0.25s ease-in-out, background 0.3s ease-in-out;
-}
-
-#energy-label {
-  position: absolute;
-  width: 100%;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-  text-align: center;
-  font-size: 0.65rem;
-  color: #fff;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-shadow:
-    0 0 3px rgba(0, 0, 0, 0.8),
-    0 0 6px rgba(0, 0, 0, 0.6),
-    0 0 8px rgba(0, 255, 255, 0.4);
-  pointer-events: none;
-  transition: transform 0.15s ease, color 0.2s ease;
-}
-
-/* ⚡ Анімація блискавки при відновленні енергії */
-.energy-flash {
-  position: fixed;
-  bottom: 100px;
-  left: 50px;
-  font-size: 1rem;
-  color: #00f6ff;
-  text-shadow: 0 0 6px #00ffff, 0 0 12px #0077ff;
-  opacity: 0;
-  animation: flashUp 1.2s ease-out forwards;
-  pointer-events: none;
-  z-index: 30;
-}
-
-@keyframes flashUp {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  70% {
-    transform: translateY(-15px);
-    opacity: 0.9;
-  }
-  100% {
-    transform: translateY(-25px);
-    opacity: 0;
-  }
-}
-
-/* 🔴 Ефект пульсації енергії при <10% */
-@keyframes pulseEnergy {
-  0%, 100% {
-    box-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
-  }
-  50% {
-    box-shadow: 0 0 14px rgba(255, 0, 0, 1);
-  }
-}
-
-.low-energy {
-  animation: pulseEnergy 1s infinite;
-}
-
-/* 👤 Профіль користувача */
-.profile-info {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin: 15px auto;
-}
-
-.avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  border: 2px solid #00f6ff;
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
-}
-
-.details {
-  text-align: left;
-  font-size: 0.9rem;
-  color: #fff;
-  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
-}
-
-#username {
-  font-weight: 600;
-  color: #00f6ff;
-  text-shadow: 0 0 6px #00f6ff;
-}
-
-/* 👤 Профіль Telegram */
-.tg-profile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 30px;
-  text-align: center;
-  gap: 10px;
-}
-
-.tg-avatar {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  border: 3px solid #00f6ff;
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.tg-avatar:hover {
-  transform: scale(1.05);
-}
-
-#username {
-  font-weight: 700;
-  font-size: 1rem;
-  color: #00f6ff;
-  text-shadow: 0 0 8px #00f6ff;
-  margin: 5px 0 0;
-}
-
-#userId {
-  font-size: 0.8rem;
-  color: #ccc;
-  opacity: 0.8;
-}
-
-/* 📊 Блок статистики */
-.profile-stats {
-  margin-top: 25px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 15px;
-  max-width: 280px;
-  margin-left: auto;
-  margin-right: auto;
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.1);
-  backdrop-filter: blur(6px);
-}
-
-.profile-stats p {
-  margin: 8px 0;
-  font-size: 0.9rem;
-  color: #fff;
-  font-weight: 500;
-  text-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
-}
-
-.profile-stats span {
-  color: #00f6ff;
-  font-weight: 700;
-}
-
-/* ============================= */
-/* 🪙 SOFT-БАЛАНС ПІД ГОЛОВНИМ   */
-/* ============================= */
-
-.soft-balance-row {
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
-  gap: 6px;
-  margin-bottom: 16px;
-  font-size: 0.85rem;
-  opacity: 0.9;
-}
-
-.soft-label {
-  color: #9ba0c0;
-}
-
-.soft-value {
-  color: #ffb84c;
-  font-weight: 700;
-  text-shadow: 0 0 8px rgba(255, 184, 76, 0.7);
-}
-
 /* ============================= */
 /* 🧊 ПАНЕЛІ (ПАСИВ + КАРТКИ)   */
 /* ============================= */
 
 .panel {
-  background: rgba(15, 18, 35, 0.95);
+  background: rgba(15, 18, 35, 0.96);
   border-radius: 16px;
-  padding: 14px 12px;
-  margin: 12px 0;
-  border: 1px solid rgba(0, 255, 198, 0.15);
+  padding: 12px 12px;
+  margin: 8px 0;
+  border: 1px solid rgba(0, 255, 198, 0.14);
   box-shadow:
-    0 0 12px rgba(0, 0, 0, 0.6),
-    0 0 18px rgba(0, 255, 198, 0.12);
+    0 0 12px rgba(0, 0, 0, 0.65),
+    0 0 18px rgba(0, 255, 198, 0.08);
+}
+
+.panel-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
 }
 
 .panel h2 {
-  margin: 0 0 10px;
-  font-size: 1rem;
+  margin: 0;
+  font-size: 0.98rem;
   color: #00ffc6;
   text-align: left;
   text-shadow: 0 0 8px rgba(0, 255, 198, 0.7);
 }
 
+.panel-tag {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(0, 255, 198, 0.12);
+  color: #7affd5;
+  border: 1px solid rgba(0, 255, 198, 0.35);
+}
+
+.panel-tag-purple {
+  background: rgba(176, 60, 255, 0.15);
+  color: #f0c5ff;
+  border-color: rgba(176, 60, 255, 0.5);
+}
+
+/* 📈 Пасивний дохід */
 .passive-panel {
-  margin-top: 18px;
+  margin-top: 4px;
 }
-
-.cards-panel {
-  margin-bottom: 10px;
-}
-
-/* 📈 Пасивний дохід — всередині панелі */
 
 .passive-row {
   display: flex;
@@ -493,9 +423,11 @@ body::before {
   text-align: left;
 }
 
-/* ============================= */
-/* 🃏 КАРТКИ ПАСИВНОГО ДОХОДУ    */
-/* ============================= */
+/* 🃏 КАРТКИ ПАСИВНОГО ДОХОДУ */
+
+.cards-panel {
+  margin-bottom: 8px;
+}
 
 .cards-list {
   display: flex;
@@ -508,7 +440,7 @@ body::before {
               #151731;
   border-radius: 12px;
   padding: 10px 10px 8px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 0 14px rgba(0, 0, 0, 0.6);
 }
 
@@ -592,4 +524,195 @@ body::before {
 .card-footer .btn-upgrade:active {
   transform: scale(0.96);
   box-shadow: 0 0 6px rgba(255, 184, 76, 0.5);
+}
+
+/* 🎯 Завдання (Tasks) */
+
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.task-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(18, 20, 40, 0.95);
+  padding: 10px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 0 10px rgba(0,0,0,0.65);
+}
+
+.task-info {
+  text-align: left;
+  max-width: 70%;
+}
+
+.task-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.task-reward {
+  font-size: 0.78rem;
+  color: #a8aed8;
+}
+
+.task-btn {
+  background: linear-gradient(135deg, #00f6ff, #0077ff);
+  border: none;
+  color: #000;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  box-shadow: 0 0 8px rgba(0, 246, 255, 0.7);
+}
+
+/* 🚀 Airdrop */
+
+.airdrop-panel {
+  margin-top: 10px;
+}
+
+.airdrop-text {
+  font-size: 0.84rem;
+  color: #dfe4ff;
+  margin-bottom: 8px;
+}
+
+.airdrop-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.8rem;
+  color: #b8bfee;
+}
+
+.airdrop-list li {
+  margin-bottom: 4px;
+}
+
+/* 👤 Профіль Telegram */
+
+.tg-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 16px;
+  text-align: center;
+  gap: 10px;
+}
+
+.tg-avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 3px solid #00f6ff;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.tg-avatar:hover {
+  transform: scale(1.05);
+}
+
+#username {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #00f6ff;
+  text-shadow: 0 0 8px #00f6ff;
+  margin: 5px 0 0;
+}
+
+#userId {
+  font-size: 0.8rem;
+  color: #ccc;
+  opacity: 0.8;
+}
+
+/* 📊 Блок статистики */
+.profile-stats {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+  max-width: 280px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.1);
+  backdrop-filter: blur(6px);
+}
+
+.profile-stats p {
+  margin: 6px 0;
+  font-size: 0.9rem;
+  color: #fff;
+  font-weight: 500;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+}
+
+.profile-stats span {
+  color: #00f6ff;
+  font-weight: 700;
+}
+
+/* 🧭 Нижнє меню */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 480px;
+  width: 100%;
+  height: 70px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #050814;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  z-index: 10;
+}
+
+.bottom-nav button {
+  flex: 1;
+  height: 100%;
+  border: none;
+  background: none;
+  color: #888;
+  font-size: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s ease;
+}
+
+.bottom-nav button span {
+  font-size: 0.65rem;
+  margin-top: 2px;
+  letter-spacing: 0.5px;
+}
+
+.bottom-nav button.active {
+  color: #00f6ff;
+  text-shadow: 0 0 8px #00f6ff;
+}
+
+/* 🔒 Безпечна зона для iPhone */
+.bottom-nav::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: env(safe-area-inset-bottom);
+  background: #050814;
 }
