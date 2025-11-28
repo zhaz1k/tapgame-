@@ -141,12 +141,12 @@ function loadGame() {
       return;
     }
     const data = JSON.parse(saved);
-    coins                 = data.coins ?? 0;
-    xp                    = data.xp ?? 0;
-    level                 = data.level ?? 1;
-    energy                = data.energy ?? maxEnergy;
-    softCoins             = data.softCoins ?? 0;
-    stars                 = data.stars ?? 20;
+    coins                  = data.coins ?? 0;
+    xp                     = data.xp ?? 0;
+    level                  = data.level ?? 1;
+    energy                 = data.energy ?? maxEnergy;
+    softCoins              = data.softCoins ?? 0;
+    stars                  = data.stars ?? 20;
     passiveBoostMultiplier = data.passiveBoostMultiplier ?? 1;
     passiveBoostEndAt      = data.passiveBoostEndAt ?? 0;
   } catch (e) {
@@ -622,15 +622,26 @@ function saveUserCards() {
   }
 }
 
-// ініціалізація стартових карток (якщо пусто)
+// ініціалізація карток: дозаливаємо всі, яких ще немає
 function initDefaultCardsIfNeeded() {
-  userCards = loadUserCards();
+  userCards = loadUserCards() || [];
 
-  if (!userCards || userCards.length === 0) {
-    userCards = [
-      { cardId: 'miner_1', level: 1, acquiredAt: Date.now() },
-      { cardId: 'vault_1', level: 1, acquiredAt: Date.now() }
-    ];
+  const now = Date.now();
+  const existingIds = new Set(userCards.map(c => c.cardId));
+  let changed = false;
+
+  for (const cardId of Object.keys(CARD_DEFS)) {
+    if (!existingIds.has(cardId)) {
+      userCards.push({
+        cardId,
+        level: 1,
+        acquiredAt: now
+      });
+      changed = true;
+    }
+  }
+
+  if (changed) {
     saveUserCards();
   }
 }
