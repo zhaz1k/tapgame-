@@ -13,7 +13,14 @@ let currentUserId = "guest"; // за замовчуванням
 // softCoins (невиводимі монетки для пасиву/карток)
 let softCoins = 0;
 
-// максимальна кількість годин пасиву, яку можна накопичити разом
+// ⭐ зірки для донату
+let stars = 0;
+
+// буст пасивного доходу
+let passiveBoostMultiplier = 1;
+let passiveBoostEndAt = 0; // timestamp мс, до якого активний буст
+
+// максимальна кількість годин пасиву, яку можна накопичити за раз
 const MAX_PASSIVE_HOURS = 24;
 
 // ------------------------------
@@ -30,9 +37,17 @@ const usernameEl   = document.getElementById("username");
 const photoEl      = document.getElementById("userPhoto");
 const userIdEl     = document.getElementById("userId");
 
-// елементи для soft-монет
-const softBalanceEl        = document.getElementById("soft-balance");
-const profileSoftCoinsEl   = document.getElementById("profileSoftCoins");
+// soft
+const softBalanceEl      = document.getElementById("soft-balance");
+const profileSoftCoinsEl = document.getElementById("profileSoftCoins");
+
+// ⭐
+const starsBalanceEl = document.getElementById("starsBalance");
+const profileStarsEl = document.getElementById("profileStars");
+const shopStarsEl    = document.getElementById("shop-stars");
+
+// пасив
+const passiveBoostStatusEl = document.getElementById("passive-boost-status");
 
 // ------------------------------
 // 🧩 Telegram WebApp інтеграція
@@ -99,7 +114,16 @@ function getCardsKey() {
 }
 
 function saveGame() {
-  const data = { coins, xp, level, energy, softCoins };
+  const data = {
+    coins,
+    xp,
+    level,
+    energy,
+    softCoins,
+    stars,
+    passiveBoostMultiplier,
+    passiveBoostEndAt
+  };
   try {
     localStorage.setItem(getSaveKey(), JSON.stringify(data));
     localStorage.setItem(getTimeKey(), Date.now().toString());
@@ -111,13 +135,20 @@ function saveGame() {
 function loadGame() {
   try {
     const saved = localStorage.getItem(getSaveKey());
-    if (!saved) return;
+    if (!saved) {
+      // перший старт — дамо трохи зірок
+      stars = 20;
+      return;
+    }
     const data = JSON.parse(saved);
-    coins     = data.coins     ?? 0;
-    xp        = data.xp        ?? 0;
-    level     = data.level     ?? 1;
-    energy    = data.energy    ?? maxEnergy;
-    softCoins = data.softCoins ?? 0;
+    coins                 = data.coins ?? 0;
+    xp                    = data.xp ?? 0;
+    level                 = data.level ?? 1;
+    energy                = data.energy ?? maxEnergy;
+    softCoins             = data.softCoins ?? 0;
+    stars                 = data.stars ?? 20;
+    passiveBoostMultiplier = data.passiveBoostMultiplier ?? 1;
+    passiveBoostEndAt      = data.passiveBoostEndAt ?? 0;
   } catch (e) {
     console.warn("Помилка завантаження сейву:", e);
   }
@@ -191,6 +222,13 @@ function updateSoftUI() {
   }
 }
 
+// оновлення відображення зірок
+function updateStarsUI() {
+  if (starsBalanceEl) starsBalanceEl.textContent = stars;
+  if (profileStarsEl) profileStarsEl.textContent = stars;
+  if (shopStarsEl)    shopStarsEl.textContent = stars;
+}
+
 // ------------------------------
 // 🔹 XP
 // ------------------------------
@@ -222,10 +260,6 @@ function spawnFlash() {
   const flash = document.createElement("div");
   flash.classList.add("energy-flash");
   flash.textContent = "⚡ +1";
-  const offsetX = 40 + Math.random() * 20;
-  const offsetY = 100 + Math.random() * 10;
-  flash.style.left   = `${offsetX}px`;
-  flash.style.bottom = `${offsetY}px`;
   document.body.appendChild(flash);
   setTimeout(() => flash.remove(), 1200);
 }
@@ -234,16 +268,21 @@ function spawnFlash() {
 // 🧠 PASIVE INCOME + CARDS
 // ------------------------------
 
-// Базові дефініції карток (мінімальний набір, потім можна розширити)
+// 20 карток (common / rare / epic / legendary)
 const CARD_DEFS = {
+  // COMMON
   miner_1: {
     cardId: 'miner_1',
     name: 'Майнер',
-    description: 'Видобуває монети щогодини.',
-    type: 'soft_income', // дає soft монети / год
+    description: 'Видобуває soft-монети щогодини.',
+    type: 'soft_income',
     rarity: 'common',
     baseIncomePerHour: 80,
     incomePerLevel: 20,
+    baseEnergyPerDay: 0,
+    energyPerLevel: 0,
+    baseBonusPercent: 0,
+    bonusPercentPerLevel: 0,
     maxLevel: 10,
     baseUpgradeCostSoft: 800,
     upgradeCostMultiplier: 1.5
@@ -256,6 +295,10 @@ const CARD_DEFS = {
     rarity: 'common',
     baseIncomePerHour: 50,
     incomePerLevel: 15,
+    baseEnergyPerDay: 0,
+    energyPerLevel: 0,
+    baseBonusPercent: 0,
+    bonusPercentPerLevel: 0,
     maxLevel: 10,
     baseUpgradeCostSoft: 600,
     upgradeCostMultiplier: 1.4
@@ -263,14 +306,34 @@ const CARD_DEFS = {
   energy_lamp: {
     cardId: 'energy_lamp',
     name: 'Ліхтар енергії',
-    description: 'Додає енергію щодня (можна буде додати пізніше).',
+    description: 'Додає енергію щодня (можна реалізувати пізніше).',
     type: 'energy_income',
     rarity: 'common',
     baseIncomePerHour: 0,
     incomePerLevel: 0,
+    baseEnergyPerDay: 10,
+    energyPerLevel: 5,
+    baseBonusPercent: 0,
+    bonusPercentPerLevel: 0,
     maxLevel: 10,
     baseUpgradeCostSoft: 500,
     upgradeCostMultiplier: 1.4
+  },
+  robot_old: {
+    cardId: 'robot_old',
+    name: 'Старий робот',
+    description: 'Трохи допомагає з пасивом.',
+    type: 'soft_income',
+    rarity: 'common',
+    baseIncomePerHour: 60,
+    incomePerLevel: 18,
+    baseEnergyPerDay: 0,
+    energyPerLevel: 0,
+    baseBonusPercent: 0,
+    bonusPercentPerLevel: 0,
+    maxLevel: 10,
+    baseUpgradeCostSoft: 700,
+    upgradeCostMultiplier: 1.45
   },
   coin_magnet: {
     cardId: 'coin_magnet',
@@ -280,11 +343,259 @@ const CARD_DEFS = {
     rarity: 'common',
     baseIncomePerHour: 0,
     incomePerLevel: 0,
+    baseEnergyPerDay: 0,
+    energyPerLevel: 0,
     baseBonusPercent: 1,
     bonusPercentPerLevel: 0.5,
     maxLevel: 8,
     baseUpgradeCostSoft: 1000,
     upgradeCostMultiplier: 1.6
+  },
+
+  // RARE
+  miner_2: {
+    cardId: 'miner_2',
+    name: 'Супер Майнер',
+    description: 'Сильно піднімає пасивний дохід.',
+    type: 'soft_income',
+    rarity: 'rare',
+    baseIncomePerHour: 200,
+    incomePerLevel: 40,
+    baseEnergyPerDay: 0,
+    energyPerLevel: 0,
+    baseBonusPercent: 0,
+    bonusPercentPerLevel: 0,
+    maxLevel: 12,
+    baseUpgradeCostSoft: 2500,
+    upgradeCostMultiplier: 1.7
+  },
+  power_station: {
+    cardId: 'power_station',
+    name: 'Енергостанція',
+    description: 'Генерує енергію щодня.',
+    type: 'energy_income',
+    rarity: 'rare',
+    baseIncomePerHour: 0,
+    incomePerLevel: 0,
+    baseEnergyPerDay: 30,
+    energyPerLevel: 8,
+    baseBonusPercent: 0,
+    bonusPercentPerLevel: 0,
+    maxLevel: 12,
+    baseUpgradeCostSoft: 2200,
+    upgradeCostMultiplier: 1.65
+  },
+  passive_server: {
+    cardId: 'passive_server',
+    name: 'Пасивний сервер',
+    description: 'Тримає стабільний soft-потік.',
+    type: 'soft_income',
+    rarity: 'rare',
+    baseIncomePerHour: 150,
+    incomePerLevel: 35,
+    baseEnergyPerDay: 0,
+    energyPerLevel: 0,
+    baseBonusPercent: 0,
+    bonusPercentPerLevel: 0,
+    maxLevel: 12,
+    baseUpgradeCostSoft: 2300,
+    upgradeCostMultiplier: 1.7
+  },
+  drone_collector: {
+    cardId: 'drone_collector',
+    name: 'Дрон-збирач',
+    description: 'Дає soft і трохи енергії.',
+    type: 'hybrid',
+    rarity: 'rare',
+    baseIncomePerHour: 100,
+    incomePerLevel: 25,
+    baseEnergyPerDay: 5,
+    energyPerLevel: 2,
+    baseBonusPercent: 0,
+    bonusPercentPerLevel: 0,
+    maxLevel: 10,
+    baseUpgradeCostSoft: 2600,
+    upgradeCostMultiplier: 1.7
+  },
+  ref_hub: {
+    cardId: 'ref_hub',
+    name: 'Реферальний хаб',
+    description: 'Підсилює пасив за рахунок мережі.',
+    type: 'bonus',
+    rarity: 'rare',
+    baseIncomePerHour: 0,
+    incomePerLevel: 0,
+    baseEnergyPerDay: 0,
+    energyPerLevel: 0,
+    baseBonusPercent: 1,
+    bonusPercentPerLevel: 1,
+    maxLevel: 8,
+    baseUpgradeCostSoft: 3000,
+    upgradeCostMultiplier: 1.8
+  },
+
+  // EPIC
+  neon_factory: {
+    cardId: 'neon_factory',
+    name: 'Неонова фабрика',
+    description: 'Потужний пасивний дохід у neon-стилі.',
+    type: 'soft_income',
+    rarity: 'epic',
+    baseIncomePerHour: 400,
+    incomePerLevel: 80,
+    baseEnergyPerDay: 0,
+    energyPerLevel: 0,
+    baseBonusPercent: 0,
+    bonusPercentPerLevel: 0,
+    maxLevel: 15,
+    baseUpgradeCostSoft: 6000,
+    upgradeCostMultiplier: 1.9
+  },
+  core_reactor: {
+    cardId: 'core_reactor',
+    name: 'Центральний реактор',
+    description: 'Дає багато енергії щодня.',
+    type: 'energy_income',
+    rarity: 'epic',
+    baseIncomePerHour: 0,
+    incomePerLevel: 0,
+    baseEnergyPerDay: 80,
+    energyPerLevel: 15,
+    baseBonusPercent: 0,
+    bonusPercentPerLevel: 0,
+    maxLevel: 15,
+    baseUpgradeCostSoft: 6500,
+    upgradeCostMultiplier: 1.9
+  },
+  bonus_lab: {
+    cardId: 'bonus_lab',
+    name: 'Лабораторія бонусів',
+    description: 'Додає сильний % бонус до всього пасиву.',
+    type: 'bonus',
+    rarity: 'epic',
+    baseIncomePerHour: 0,
+    incomePerLevel: 0,
+    baseEnergyPerDay: 0,
+    energyPerLevel: 0,
+    baseBonusPercent: 3,
+    bonusPercentPerLevel: 1.2,
+    maxLevel: 12,
+    baseUpgradeCostSoft: 7000,
+    upgradeCostMultiplier: 2.0
+  },
+  world_server: {
+    cardId: 'world_server',
+    name: 'Всесвітній сервер',
+    description: 'Глобальний хаб для пасивного доходу.',
+    type: 'soft_income',
+    rarity: 'epic',
+    baseIncomePerHour: 500,
+    incomePerLevel: 90,
+    baseEnergyPerDay: 0,
+    energyPerLevel: 0,
+    baseBonusPercent: 0,
+    bonusPercentPerLevel: 0,
+    maxLevel: 15,
+    baseUpgradeCostSoft: 8000,
+    upgradeCostMultiplier: 2.0
+  },
+  neon_tower: {
+    cardId: 'neon_tower',
+    name: 'Неоновий хмарочос',
+    description: 'Великий hybrid: soft + енергія.',
+    type: 'hybrid',
+    rarity: 'epic',
+    baseIncomePerHour: 250,
+    incomePerLevel: 60,
+    baseEnergyPerDay: 20,
+    energyPerLevel: 5,
+    baseBonusPercent: 0,
+    bonusPercentPerLevel: 0,
+    maxLevel: 15,
+    baseUpgradeCostSoft: 8500,
+    upgradeCostMultiplier: 2.0
+  },
+
+  // LEGENDARY
+  future_bank: {
+    cardId: 'future_bank',
+    name: 'Банк майбутнього',
+    description: 'Легендарний генератор soft-монет.',
+    type: 'soft_income',
+    rarity: 'legendary',
+    baseIncomePerHour: 1000,
+    incomePerLevel: 200,
+    baseEnergyPerDay: 0,
+    energyPerLevel: 0,
+    baseBonusPercent: 0,
+    bonusPercentPerLevel: 0,
+    maxLevel: 20,
+    baseUpgradeCostSoft: 15000,
+    upgradeCostMultiplier: 2.2
+  },
+  neon_sun: {
+    cardId: 'neon_sun',
+    name: 'Неон-сонце',
+    description: 'Нереально багато енергії щодня.',
+    type: 'energy_income',
+    rarity: 'legendary',
+    baseIncomePerHour: 0,
+    incomePerLevel: 0,
+    baseEnergyPerDay: 150,
+    energyPerLevel: 20,
+    baseBonusPercent: 0,
+    bonusPercentPerLevel: 0,
+    maxLevel: 20,
+    baseUpgradeCostSoft: 16000,
+    upgradeCostMultiplier: 2.2
+  },
+  multiverse_hub: {
+    cardId: 'multiverse_hub',
+    name: 'Мультиверс хаб',
+    description: 'Дає дуже сильний бонус до пасиву.',
+    type: 'bonus',
+    rarity: 'legendary',
+    baseIncomePerHour: 0,
+    incomePerLevel: 0,
+    baseEnergyPerDay: 0,
+    energyPerLevel: 0,
+    baseBonusPercent: 5,
+    bonusPercentPerLevel: 2,
+    maxLevel: 15,
+    baseUpgradeCostSoft: 17000,
+    upgradeCostMultiplier: 2.3
+  },
+  galaxy_server: {
+    cardId: 'galaxy_server',
+    name: 'Галактичний сервер',
+    description: 'Легендарний soft-двигун.',
+    type: 'soft_income',
+    rarity: 'legendary',
+    baseIncomePerHour: 1500,
+    incomePerLevel: 250,
+    baseEnergyPerDay: 0,
+    energyPerLevel: 0,
+    baseBonusPercent: 0,
+    bonusPercentPerLevel: 0,
+    maxLevel: 20,
+    baseUpgradeCostSoft: 20000,
+    upgradeCostMultiplier: 2.3
+  },
+  passive_portal: {
+    cardId: 'passive_portal',
+    name: 'Портал пасиву',
+    description: 'Hybrid + трохи енергії.',
+    type: 'hybrid',
+    rarity: 'legendary',
+    baseIncomePerHour: 800,
+    incomePerLevel: 150,
+    baseEnergyPerDay: 40,
+    energyPerLevel: 8,
+    baseBonusPercent: 0,
+    bonusPercentPerLevel: 0,
+    maxLevel: 20,
+    baseUpgradeCostSoft: 22000,
+    upgradeCostMultiplier: 2.3
   }
 };
 
@@ -378,11 +689,19 @@ function calcPassiveState() {
   if (hours < 0) hours = 0;
   if (hours > MAX_PASSIVE_HOURS) hours = MAX_PASSIVE_HOURS;
 
-  const baseSoft = totalSoftIncomePerHour * hours;
+  // активний буст пасиву (x2 / x5 / VIP)
+  let activeBoost = 1;
+  if (passiveBoostEndAt && now < passiveBoostEndAt && passiveBoostMultiplier > 1) {
+    activeBoost = passiveBoostMultiplier;
+  }
+
+  let effectiveIncomePerHour = totalSoftIncomePerHour * activeBoost;
+  const baseSoft = effectiveIncomePerHour * hours;
+
   const softWithBonus = baseSoft * (1 + totalBonusPercent / 100);
 
   return {
-    totalSoftIncomePerHour,
+    totalSoftIncomePerHour: Math.floor(effectiveIncomePerHour),
     totalBonusPercent,
     unclaimedSoft: Math.floor(softWithBonus),
     hours
@@ -454,8 +773,20 @@ function updatePassiveUI() {
     elLast.textContent = d.toLocaleString();
   }
 
-  // паралельно оновлюємо soft-баланс
+  // статус бусту
+  if (passiveBoostStatusEl) {
+    const now = Date.now();
+    if (passiveBoostEndAt && now < passiveBoostEndAt && passiveBoostMultiplier > 1) {
+      const end = new Date(passiveBoostEndAt);
+      passiveBoostStatusEl.textContent = `Boost x${passiveBoostMultiplier} до ${end.toLocaleTimeString()}`;
+    } else {
+      passiveBoostStatusEl.textContent = "Boost не активний";
+    }
+  }
+
+  // оновлюємо soft та зірки
   updateSoftUI();
+  updateStarsUI();
 }
 
 // рендер списку карток
@@ -472,12 +803,7 @@ function renderCardsList() {
     const { softIncomePerHour, bonusPercent } = calcCardIncome(def, uc.level);
     const currentLevel = uc.level;
 
-    const nextCost = Math.floor(
-      def.baseUpgradeCostSoft * Math.pow(def.upgradeCostSoftMultiplier || def.upgradeCostMultiplier, currentLevel - 1)
-    );
-
-    // Виправлення: якщо помилились у назві поля
-    const realCost = Math.floor(
+    const cost = Math.floor(
       def.baseUpgradeCostSoft * Math.pow(def.upgradeCostMultiplier, currentLevel - 1)
     );
 
@@ -499,7 +825,7 @@ function renderCardsList() {
       </div>
       <div class="card-footer">
         <button class="btn-upgrade" data-card-id="${def.cardId}">
-          Покращити за ${realCost} soft
+          Покращити за ${cost} soft
         </button>
       </div>
     `;
@@ -529,8 +855,101 @@ function initPassiveSystem() {
     });
   }
 
-  // періодично оновлюємо панель пасиву (щоб число "накопичено" збільшувалось)
+  // періодично оновлюємо панель пасиву
   setInterval(updatePassiveUI, 5000);
+}
+
+// ------------------------------
+// 🛒 BOOST SHOP
+// ------------------------------
+const SHOP_ITEMS = {
+  energy_250: {
+    cost: 10,
+    type: "energy",
+    amount: 250
+  },
+  passive_x2_1h: {
+    cost: 20,
+    type: "passiveBoost",
+    multiplier: 2,
+    durationMs: 60 * 60 * 1000
+  },
+  passive_x5_30m: {
+    cost: 35,
+    type: "passiveBoost",
+    multiplier: 5,
+    durationMs: 30 * 60 * 1000
+  },
+  vip_24h: {
+    cost: 50,
+    type: "passiveBoost",
+    multiplier: 1.2,
+    durationMs: 24 * 60 * 60 * 1000
+  },
+  box_random_card: {
+    cost: 40,
+    type: "box"
+  }
+};
+
+function giveRandomCardFromBox() {
+  const ids = Object.keys(CARD_DEFS);
+  if (!ids.length) return;
+  const randomId = ids[Math.floor(Math.random() * ids.length)];
+  const def = CARD_DEFS[randomId];
+  if (!def) return;
+
+  let uc = userCards.find(c => c.cardId === randomId);
+  if (!uc) {
+    uc = { cardId: randomId, level: 1, acquiredAt: Date.now() };
+    userCards.push(uc);
+  } else if (uc.level < def.maxLevel) {
+    uc.level += 1;
+  } else {
+    // якщо карта вже на максимумі — дамо трошки soft як компенсацію
+    softCoins += 500;
+  }
+  saveUserCards();
+}
+
+function buyProduct(productId) {
+  const item = SHOP_ITEMS[productId];
+  if (!item) return;
+
+  if (stars < item.cost) {
+    console.log("Не вистачає зірок");
+    return;
+  }
+
+  stars -= item.cost;
+
+  if (item.type === "energy") {
+    energy = Math.min(maxEnergy, energy + item.amount);
+    updateEnergy(true);
+  } else if (item.type === "passiveBoost") {
+    passiveBoostMultiplier = item.multiplier;
+    const now = Date.now();
+    passiveBoostEndAt = now + item.durationMs;
+  } else if (item.type === "box") {
+    giveRandomCardFromBox();
+  }
+
+  saveGame();
+  updateStarsUI();
+  updatePassiveUI();
+  renderCardsList();
+}
+
+function initShop() {
+  const shopButtons = document.querySelectorAll(".shop-buy-btn");
+  shopButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const productId = btn.getAttribute("data-product-id");
+      buyProduct(productId);
+    });
+  });
+
+  updateStarsUI();
 }
 
 // ------------------------------
@@ -587,4 +1006,6 @@ renderCoins();
 renderXP();
 updateEnergy();
 updateSoftUI();
+updateStarsUI();
 initPassiveSystem();
+initShop();
