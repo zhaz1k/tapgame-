@@ -716,3 +716,88 @@ body::before {
   height: env(safe-area-inset-bottom);
   background: #050814;
 }
+
+/* ⭐ Зірки в топ-барі */
+.top-stars {
+  margin-top: 2px;
+  font-size: 0.78rem;
+  color: #ffd65c;
+  text-shadow: 0 0 8px rgba(255, 214, 92, 0.8);
+}
+
+/* Статус бусту пасиву */
+.passive-boost {
+  margin-top: 4px;
+  font-size: 0.7rem;
+  color: #f0c5ff;
+}
+
+/* SHOP */
+.shop-panel {
+  margin-top: 12px;
+}
+
+.panel-tag-gold {
+  background: rgba(255, 214, 92, 0.15);
+  color: #ffe39a;
+  border-color: rgba(255, 214, 92, 0.6);
+}
+
+.shop-stars-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #dfe4ff;
+  margin-bottom: 8px;
+}
+
+.shop-stars-value {
+  font-weight: 700;
+  color: #ffd65c;
+  text-shadow: 0 0 8px rgba(255, 214, 92, 0.8);
+}
+
+.shop-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shop-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 8px;
+  border-radius: 10px;
+  background: rgba(12, 15, 32, 0.95);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.shop-item-info {
+  text-align: left;
+  max-width: 70%;
+}
+
+.shop-item-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.shop-item-desc {
+  font-size: 0.75rem;
+  color: #a8aed8;
+}
+
+.shop-buy-btn {
+  background: linear-gradient(135deg, #ffd65c, #ff9b3d);
+  border: none;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #271300;
+  box-shadow: 0 0 10px rgba(255, 214, 92, 0.7);
+}
+
