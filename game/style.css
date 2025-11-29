@@ -1103,3 +1103,28 @@ body::before {
   font-size: 0.68rem;
   opacity: 0.9;
 }
+
+/* фіксим горизонтальний скрол */
+html, body {
+  overflow-x: hidden;
+}
+
+.screens {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.screen {
+  overflow-x: hidden;
+}
+
+/* щоб нижнє меню завжди було поверх усього */
+.bottom-nav {
+  z-index: 999;
+}
+
+/* запас під меню саме в City */
+#city.screen {
+  padding-bottom: 110px; /* було 90, можна трохи більше */
+}
+
