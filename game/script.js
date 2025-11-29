@@ -836,7 +836,9 @@ function renderCardsList() {
         </div>
       </div>
       <div class="card-footer">
-        <button class="btn-upgrade" data-card-id="${def.cardId}">Покращити за ${cost} soft</button>
+        <button class="btn-upgrade" data-card-id="${def.cardId}">
+          Покращити за ${cost} soft
+        </button>
       </div>
     `;
 
@@ -852,7 +854,7 @@ function renderCardsList() {
   });
 }
 
-// 🏙 рендер NEON CITY
+// 🏙 рендер NEON CITY з карток (3 колонки)
 function renderCity() {
   const cityGrid = document.getElementById("city-grid");
   if (!cityGrid) return;
@@ -873,7 +875,6 @@ function renderCity() {
 
     if (rA !== rB) return rA - rB;
 
-    // якщо однаковий раритет — сортуємо за теор. доходом
     const incA = calcCardIncome(defA, a.level).softIncomePerHour;
     const incB = calcCardIncome(defB, b.level).softIncomePerHour;
     return incB - incA;
@@ -885,21 +886,15 @@ function renderCity() {
 
     const { softIncomePerHour } = calcCardIncome(def, uc.level);
 
-    // визначаємо тип
     let typeLabel = "";
-    let typeIcon = "";
     if (def.type === "soft_income") {
       typeLabel = "Soft";
-      typeIcon = "🪙";
     } else if (def.type === "energy_income") {
       typeLabel = "Energy";
-      typeIcon = "⚡";
     } else if (def.type === "bonus") {
       typeLabel = "Bonus";
-      typeIcon = "%";
     } else if (def.type === "hybrid") {
       typeLabel = "Hybrid";
-      typeIcon = "🌀";
     }
 
     const building = document.createElement("div");
@@ -909,17 +904,13 @@ function renderCity() {
     header.className = "city-building-header";
     header.innerHTML = `
       <div class="city-building-name">${def.name}</div>
-      <div class="city-building-type">
-        <span>${typeIcon}</span>
-        <span>${typeLabel}</span>
-      </div>
+      <div class="city-building-type">${typeLabel}</div>
     `;
 
     const body = document.createElement("div");
     body.className = "city-building-body";
 
-    // робимо "вікна"
-    const windowsCount = 9;
+    const windowsCount = 6;
     for (let i = 0; i < windowsCount; i++) {
       const w = document.createElement("div");
       w.className = "city-window";
@@ -1008,7 +999,6 @@ function giveRandomCardFromBox() {
   } else if (uc.level < def.maxLevel) {
     uc.level += 1;
   } else {
-    // якщо карта вже на максимумі — дамо трошки soft як компенсацію
     softCoins += 500;
   }
   saveUserCards();
@@ -1059,10 +1049,9 @@ function initShop() {
   if (btnBuyStars) {
     btnBuyStars.addEventListener("click", () => {
       if (tg) {
-        // у проді тут відкриваєш свій бот / інвойс
         tg.openTelegramLink("https://t.me/donet_app_bot?start=buy_stars");
       } else {
-        // 🔧 DEV-режим у браузері
+        // DEV-режим у браузері: даємо тестові зірки
         stars += 10;
         saveGame();
         updateStarsUI();
