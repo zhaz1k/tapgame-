@@ -1,37 +1,54 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
   <title>TapGame</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Стилі гри -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Bootstrap Icons для нижнього меню -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    rel="stylesheet"
+  />
+
+  <!-- Telegram WebApp -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 
 <body>
   <div class="app">
-
-    <!-- 🔝 Верхній бар -->
+    <!-- 🔝 Верхній бар з профілем і балансом -->
     <header class="top-bar">
       <div class="top-left">
-        <img id="userPhoto" class="top-avatar"
-             src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+        <img
+          id="userPhoto"
+          class="top-avatar"
+          src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+          alt="avatar"
+        />
         <div class="top-user">
           <div id="username" class="top-username">Завантаження...</div>
           <div id="userId" class="top-userid">ID: —</div>
         </div>
       </div>
-
       <div class="top-right">
         <div class="top-balance-label">Баланс</div>
-        <div class="top-balance-value">💰 <span id="coins">0</span></div>
-        <div class="top-stars">⭐ <span id="starsBalance">0</span></div>
+        <div class="top-balance-value">
+          💰 <span id="coins">0</span>
+        </div>
+        <div class="top-stars">
+          ⭐ <span id="starsBalance">0</span>
+        </div>
       </div>
     </header>
 
-    <!-- ⚡ Прогрес енергії -->
+    <!-- ⚡ Прогрес-бар енергії -->
     <div class="energy-wrapper">
       <div class="energy-progress">
         <div id="energy-bar"></div>
@@ -41,16 +58,15 @@
 
     <!-- 📱 Екрани -->
     <main class="screens">
-
-      <!-- 🏠 ГОЛОВНА -->
+      <!-- 🏠 Головна -->
       <section class="screen active" id="home">
-
+        <!-- Soft монети -->
         <div class="soft-balance-row">
           <span class="soft-label">Soft монети:</span>
           <span class="soft-value" id="soft-balance">0</span>
         </div>
 
-        <!-- TAP кнопка -->
+        <!-- Кнопка TAP у неоновому кільці -->
         <div class="tap-zone">
           <div class="tap-ring-outer">
             <div class="tap-ring-inner">
@@ -59,13 +75,12 @@
           </div>
         </div>
 
-        <!-- ПАСИВНИЙ ДОХІД -->
+        <!-- Панель пасивного доходу -->
         <div class="panel passive-panel">
           <div class="panel-header-row">
             <h2>Пасивний дохід</h2>
             <span class="panel-tag">AFK 🔄</span>
           </div>
-
           <div class="passive-row">
             <div>
               <div class="label">Пасив / годину</div>
@@ -76,48 +91,49 @@
               <div class="value" id="passive-unclaimed">0</div>
             </div>
           </div>
-
-          <button id="btn-claim-passive" class="btn-primary">Забрати пасив</button>
-
+          <button id="btn-claim-passive" class="btn-primary">
+            Забрати пасив
+          </button>
           <div class="passive-last">
             Останній збір: <span id="passive-last-claim">—</span>
           </div>
-
-          <div class="passive-boost" id="passive-boost-status">Boost не активний</div>
+          <div class="passive-boost" id="passive-boost-status">
+            Boost не активний
+          </div>
         </div>
-
       </section>
 
-      <!-- 🏙 Neon City -->
-<section class="screen" id="city">
-  <h2 class="screen-title">🏙 Neon City</h2>
-  <p class="screen-subtitle">
-    Твоє неон-місто, де кожна будівля генерує пасивний дохід.
-  </p>
+      <!-- 🏙 Neon City (3 колонки, idle-стиль) -->
+      <section class="screen" id="city">
+        <h2 class="screen-title">🏙 Neon City</h2>
+        <p class="screen-subtitle">
+          Твоє неонове місто з будівель, які генерують пасивний дохід.
+        </p>
 
-  <div class="city-panel">
-    <div class="city-header-row">
-      <span class="city-label">Мультяшний город</span>
-      <span class="city-tag">NEON-CARTOON</span>
-    </div>
+        <div class="city-panel">
+          <div class="city-header-row">
+            <span class="city-label">Місто фарму</span>
+            <span class="city-tag">LIVE PASSIVE</span>
+          </div>
 
-    <div class="city-grid-3" id="city-grid">
-      <!-- JS намалює мультяшні будівлі -->
-    </div>
-  </div>
-</section>
+          <div class="city-grid" id="city-grid">
+            <!-- JS намалює будівлі з карток (3 колонки) -->
+          </div>
+        </div>
+      </section>
 
-
-      <!-- 🎯 ЗАВДАННЯ -->
+      <!-- 🎯 Завдання -->
       <section class="screen" id="tasks">
         <h2 class="screen-title">🎯 Завдання</h2>
-        <p class="screen-subtitle">Виконуй таски та отримуй нагороди</p>
+        <p class="screen-subtitle">
+          Виконуй таски і отримуй монети та boost’и.
+        </p>
 
         <ul class="task-list">
           <li class="task-card">
             <div class="task-info">
               <div class="task-title">Підписатись на Telegram</div>
-              <div class="task-reward">+500 монет</div>
+              <div class="task-reward">Нагорода: +500 монет</div>
             </div>
             <button class="task-btn claim">Отримати</button>
           </li>
@@ -125,38 +141,42 @@
           <li class="task-card">
             <div class="task-info">
               <div class="task-title">Запросити друга</div>
-              <div class="task-reward">+1000 монет</div>
+              <div class="task-reward">Нагорода: +1000 монет</div>
             </div>
             <button class="task-btn claim">Отримати</button>
           </li>
 
           <li class="task-card">
             <div class="task-info">
-              <div class="task-title">Лайк у X</div>
-              <div class="task-reward">+300 монет</div>
+              <div class="task-title">Поставити лайк у X (Twitter)</div>
+              <div class="task-reward">Нагорода: +300 монет</div>
             </div>
             <button class="task-btn claim">Отримати</button>
           </li>
         </ul>
       </section>
 
-      <!-- 🚀 AIRDROP -->
+      <!-- 🚀 Airdrop -->
       <section class="screen" id="airdrop">
         <h2 class="screen-title">🚀 Airdrop</h2>
-        <p class="screen-subtitle">Готуйся до великої нагороди</p>
+        <p class="screen-subtitle">
+          Готуйся, скоро тут буде основний роздачний движ.
+        </p>
 
         <div class="panel airdrop-panel">
           <p class="airdrop-text">
-            Чим активніший ти зараз — тим більший Airdrop отримаєш.
+            Збирай монети, качай картки та заробляй пасив — чим активніший ти
+            зараз, тим більша нагорода буде під час офіційного Airdrop.
           </p>
           <ul class="airdrop-list">
-            <li>✅ Заходь щодня</li>
+            <li>✅ Щодня заходь у гру</li>
             <li>✅ Виконуй завдання</li>
-            <li>✅ Прокачуй пасив</li>
-            <li>✅ Запрошуй друзів</li>
+            <li>✅ Прокачуй пасивний дохід</li>
+            <li>✅ Клич друзів в гру</li>
           </ul>
         </div>
 
+        <!-- 🛒 Boost Shop -->
         <div class="panel shop-panel">
           <div class="panel-header-row">
             <h2>Boost Shop</h2>
@@ -165,81 +185,120 @@
 
           <div class="shop-stars-row">
             <span>Твої зірки:</span>
-            <span id="shop-stars" class="shop-stars-value">0</span>
+            <span class="shop-stars-value" id="shop-stars">0</span>
           </div>
 
           <button id="btn-buy-stars" class="btn-secondary full-width">
             Поповнити зірки
           </button>
-
-          <p class="shop-hint">Оплата через Telegram Stars ⭐</p>
+          <p class="shop-hint">Оплата йде через Telegram Stars ⭐</p>
 
           <div class="shop-list">
-
             <div class="shop-item">
               <div class="shop-item-info">
-                <div class="shop-item-title">⚡ +250 енергії</div>
-                <div class="shop-item-desc">Не перевищує максимум.</div>
+                <div class="shop-item-title">⚡ Energy Boost +250</div>
+                <div class="shop-item-desc">
+                  Миттєво додає 250 енергії (але не більше максимуму).
+                </div>
               </div>
-              <button class="shop-buy-btn" data-product-id="energy_250">10 ⭐</button>
+              <button class="shop-buy-btn" data-product-id="energy_250">
+                10 ⭐
+              </button>
             </div>
 
             <div class="shop-item">
               <div class="shop-item-info">
-                <div class="shop-item-title">🌀 x2 пасив на 1 год</div>
-                <div class="shop-item-desc">Подвоює AFK пасив.</div>
+                <div class="shop-item-title">🌀 x2 Пасив на 1 год</div>
+                <div class="shop-item-desc">
+                  Подвоює пасивний дохід на 60 хвилин.
+                </div>
               </div>
-              <button class="shop-buy-btn" data-product-id="passive_x2_1h">20 ⭐</button>
+              <button class="shop-buy-btn" data-product-id="passive_x2_1h">
+                20 ⭐
+              </button>
             </div>
 
             <div class="shop-item">
               <div class="shop-item-info">
-                <div class="shop-item-title">🔥 x5 пасив на 30 хв</div>
-                <div class="shop-item-desc">Жорсткий буст.</div>
+                <div class="shop-item-title">🔥 x5 Пасив на 30 хв</div>
+                <div class="shop-item-desc">
+                  Серйозний буст для хайпового фарму.
+                </div>
               </div>
-              <button class="shop-buy-btn" data-product-id="passive_x5_30m">35 ⭐</button>
+              <button class="shop-buy-btn" data-product-id="passive_x5_30m">
+                35 ⭐
+              </button>
             </div>
 
+            <div class="shop-item">
+              <div class="shop-item-info">
+                <div class="shop-item-title">👑 VIP 24h</div>
+                <div class="shop-item-desc">
+                  +20% до всього пасиву на 24 години.
+                </div>
+              </div>
+              <button class="shop-buy-btn" data-product-id="vip_24h">
+                50 ⭐
+              </button>
+            </div>
+
+            <div class="shop-item">
+              <div class="shop-item-info">
+                <div class="shop-item-title">🎁 Mystery Box</div>
+                <div class="shop-item-desc">
+                  Випадкова картка або +рівень існуючої.
+                </div>
+              </div>
+              <button class="shop-buy-btn" data-product-id="box_random_card">
+                40 ⭐
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- 🃏 КАРТКИ -->
+      <!-- 🃏 Картки -->
       <section class="screen" id="cards">
-        <h2 class="screen-title">🃏 Картки</h2>
-        <p class="screen-subtitle">Прокачуй картки та збільшуй пасив</p>
+        <h2 class="screen-title">🃏 Картки пасивного доходу</h2>
+        <p class="screen-subtitle">
+          Прокачуй картки, щоб збільшувати свій пасивний дохід та бонуси.
+        </p>
 
         <div class="panel cards-panel">
           <div class="panel-header-row">
             <h2>Картки</h2>
-            <span class="panel-tag panel-tag-purple">UPGRADE</span>
+            <span class="panel-tag panel-tag-purple">UPGRADE ⬆️</span>
           </div>
-
-          <div id="cards-list" class="cards-list"></div>
+          <div id="cards-list" class="cards-list">
+            <!-- JS сюди намалює картки -->
+          </div>
         </div>
       </section>
 
-      <!-- 👤 ПРОФІЛЬ -->
+      <!-- 👤 Профіль -->
       <section class="screen" id="profile">
         <h2 class="screen-title">👤 Профіль</h2>
 
         <div class="tg-profile">
-          <img id="userPhoto" class="tg-avatar"
-               src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
-          <p id="username">Завантаження...</p>
-          <p id="userId"></p>
+          <!-- окремі id, щоб не дублювати з top-bar -->
+          <img
+            id="profilePhoto"
+            class="tg-avatar"
+            src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            alt="avatar"
+          />
+          <p id="profileUsername">Завантаження...</p>
+          <p id="profileUserId">ID: —</p>
         </div>
 
         <div class="profile-stats">
           <p>💎 Рівень: <span id="level">1</span></p>
           <p>⚙️ Досвід: <span id="xp">0</span> / 100 XP</p>
-          <p>💰 Баланс: <span id="profileCoins">0</span></p>
+          <p>💰 Баланс: <span id="profileCoins">0</span> монет</p>
           <p>🪙 Soft монети: <span id="profileSoftCoins">0</span></p>
           <p>⭐ Stars: <span id="profileStars">0</span></p>
         </div>
-
       </section>
-
     </main>
 
     <!-- 🧭 Нижнє меню -->
@@ -269,9 +328,9 @@
         <span>Profile</span>
       </button>
     </nav>
-
   </div>
 
+  <!-- Логіка гри -->
   <script src="script.js"></script>
 </body>
 </html>
