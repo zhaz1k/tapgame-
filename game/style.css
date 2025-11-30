@@ -115,14 +115,6 @@ body::before {
   text-shadow: 0 0 8px rgba(0, 255, 198, 0.8);
 }
 
-/* ⭐ Зірки в топ-барі */
-.top-stars {
-  margin-top: 2px;
-  font-size: 0.78rem;
-  color: #ffd65c;
-  text-shadow: 0 0 8px rgba(255, 214, 92, 0.8);
-}
-
 /* ⚡ Енергія */
 .energy-wrapper {
   padding: 6px 14px 4px;
@@ -198,7 +190,6 @@ body::before {
   flex: 1 1 auto;
   position: relative;
   overflow-y: auto;
-  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -206,7 +197,6 @@ body::before {
   display: none;
   padding: 12px 14px 90px;
   box-sizing: border-box;
-  overflow-x: hidden;
 }
 
 .screen.active {
@@ -358,7 +348,7 @@ body::before {
 }
 
 /* ============================= */
-/* 🧊 ПАНЕЛІ (ПАСИВ + КАРТКИ)   */
+/* 🧊 ПАНЕЛІ (ПАСИВ + LAB)      */
 /* ============================= */
 
 .panel {
@@ -426,6 +416,7 @@ body::before {
   color: #ffffff;
 }
 
+/* Кнопка "Забрати пасив" */
 .btn-primary {
   width: 100%;
   padding: 9px 14px;
@@ -452,94 +443,166 @@ body::before {
   text-align: left;
 }
 
-/* 🃏 КАРТКИ ПАСИВНОГО ДОХОДУ */
+/* ⚙️ LAB — модулі пасиву */
 
-.cards-panel {
-  margin-bottom: 8px;
+.lab-panel {
+  margin-top: 6px;
 }
 
-.cards-list {
+.lab-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.card-item {
+.lab-item {
+  position: relative;
+  border-radius: 14px;
+  padding: 10px 10px 9px;
   background:
-    radial-gradient(circle at 0% 0%, rgba(0, 255, 198, 0.16), transparent 60%),
-    #151731;
-  border-radius: 12px;
-  padding: 10px 10px 8px;
+    radial-gradient(circle at 0% 0%, rgba(0, 255, 198, 0.18), transparent 60%),
+    rgba(10, 12, 32, 0.96);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 14px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 14px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  display: flex;
+  gap: 10px;
 }
 
-.card-header {
+.lab-left {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lab-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 0%, #ffffff, #00f6ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow:
+    0 0 12px rgba(0, 246, 255, 0.9),
+    0 0 18px rgba(0, 0, 0, 0.9);
+}
+
+.lab-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lab-header-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 4px;
 }
 
-.card-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #ffffff;
+.lab-title {
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
-.card-rarity {
-  font-size: 0.7rem;
-  padding: 2px 8px;
+.lab-pills {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.lab-pill-type {
+  font-size: 0.65rem;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(4, 11, 30, 0.96);
+  border: 1px solid rgba(0, 255, 255, 0.5);
+  color: #d5f9ff;
+}
+
+.lab-pill-rarity {
+  font-size: 0.65rem;
+  padding: 2px 7px;
   border-radius: 999px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.card-rarity-common {
-  background: rgba(255, 255, 255, 0.08);
-  color: #d0d4ff;
+/* кольори раритету */
+.lab-rarity-common {
+  background: rgba(156, 163, 175, 0.25);
+  color: #e5e7eb;
+  border: 1px solid rgba(156, 163, 175, 0.7);
+}
+.lab-rarity-rare {
+  background: rgba(56, 189, 248, 0.22);
+  color: #7dd3fc;
+  border: 1px solid rgba(56, 189, 248, 0.9);
+}
+.lab-rarity-epic {
+  background: rgba(168, 85, 247, 0.22);
+  color: #e9d5ff;
+  border: 1px solid rgba(168, 85, 247, 0.9);
+}
+.lab-rarity-legendary {
+  background: rgba(250, 204, 21, 0.25);
+  color: #fef3c7;
+  border: 1px solid rgba(250, 204, 21, 0.98);
 }
 
-.card-rarity-rare {
-  background: rgba(0, 166, 255, 0.2);
-  color: #00a6ff;
+.lab-desc {
+  font-size: 0.76rem;
+  color: #cdd3ff;
 }
 
-.card-rarity-epic {
-  background: rgba(176, 60, 255, 0.2);
-  color: #b03cff;
-}
-
-.card-rarity-legendary {
-  background: rgba(255, 184, 76, 0.25);
-  color: #ffb84c;
-}
-
-.card-level {
-  font-size: 0.8rem;
-  color: #d0d4ff;
-  margin-bottom: 4px;
-}
-
-.card-desc {
-  font-size: 0.75rem;
-  color: #a4a8d4;
-  margin-bottom: 4px;
-}
-
-.card-stats div {
+.lab-stats-row {
+  display: flex;
+  justify-content: space-between;
   font-size: 0.78rem;
-  color: #ffffff;
+  margin-top: 2px;
 }
 
-.card-footer {
+.lab-soft {
+  color: #bbf7d0;
+  font-weight: 600;
+}
+
+.lab-level {
+  color: #e5e7eb;
+  font-weight: 600;
+}
+
+.lab-progress {
+  position: relative;
+  width: 100%;
+  height: 7px;
+  margin-top: 4px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.85);
+  overflow: hidden;
+}
+
+.lab-progress-bar {
+  position: absolute;
+  inset: 0;
+  width: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #22c55e, #a855f7, #f97316);
+  box-shadow: 0 0 10px rgba(236, 252, 203, 0.9);
+  transition: width 0.3s ease-out;
+}
+
+.lab-footer {
   margin-top: 6px;
 }
 
-.card-footer .btn-upgrade {
+.lab-upgrade-btn {
   width: 100%;
   border-radius: 999px;
-  padding: 7px 10px;
+  padding: 6px 10px;
   border: none;
   background: linear-gradient(120deg, #ffb84c, #ff3afb);
   color: #0c0c16;
@@ -550,9 +613,15 @@ body::before {
   transition: transform 0.08s ease, box-shadow 0.15s ease;
 }
 
-.card-footer .btn-upgrade:active {
+.lab-upgrade-btn:active {
   transform: scale(0.96);
   box-shadow: 0 0 6px rgba(255, 184, 76, 0.5);
+}
+
+.lab-upgrade-btn.disabled {
+  opacity: 0.5;
+  cursor: default;
+  box-shadow: none;
 }
 
 /* 🎯 Завдання (Tasks) */
@@ -626,100 +695,6 @@ body::before {
 
 .airdrop-list li {
   margin-bottom: 4px;
-}
-
-/* SHOP */
-
-.shop-panel {
-  margin-top: 12px;
-}
-
-.panel-tag-gold {
-  background: rgba(255, 214, 92, 0.15);
-  color: #ffe39a;
-  border-color: rgba(255, 214, 92, 0.6);
-}
-
-.shop-stars-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.8rem;
-  color: #dfe4ff;
-  margin-bottom: 8px;
-}
-
-.shop-stars-value {
-  font-weight: 700;
-  color: #ffd65c;
-  text-shadow: 0 0 8px rgba(255, 214, 92, 0.8);
-}
-
-.shop-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.shop-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 8px;
-  border-radius: 10px;
-  background: rgba(12, 15, 32, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.shop-item-info {
-  text-align: left;
-  max-width: 70%;
-}
-
-.shop-item-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 2px;
-}
-
-.shop-item-desc {
-  font-size: 0.75rem;
-  color: #a8aed8;
-}
-
-.shop-buy-btn {
-  background: linear-gradient(135deg, #ffd65c, #ff9b3d);
-  border: none;
-  border-radius: 999px;
-  padding: 6px 10px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #271300;
-  box-shadow: 0 0 10px rgba(255, 214, 92, 0.7);
-  cursor: pointer;
-}
-
-/* Допоміжні стилі кнопок */
-.btn-secondary {
-  border: none;
-  border-radius: 999px;
-  padding: 8px 12px;
-  font-size: 0.86rem;
-  font-weight: 600;
-  background: rgba(0, 0, 0, 0.3);
-  color: #dfe4ff;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.45);
-  cursor: pointer;
-}
-
-.full-width {
-  width: 100%;
-}
-
-.shop-hint {
-  font-size: 0.75rem;
-  color: #9ba0c0;
-  margin: 6px 0 10px;
 }
 
 /* 👤 Профіль Telegram */
@@ -840,6 +815,14 @@ body::before {
   background: #050814;
 }
 
+/* ⭐ Зірки в топ-барі */
+.top-stars {
+  margin-top: 2px;
+  font-size: 0.78rem;
+  color: #ffd65c;
+  text-shadow: 0 0 8px rgba(255, 214, 92, 0.8);
+}
+
 /* Статус бусту пасиву */
 .passive-boost {
   margin-top: 4px;
@@ -847,207 +830,71 @@ body::before {
   color: #f0c5ff;
 }
 
-/* ============================
-   🏙 NEON CITY CARTOON 3.0
-   ============================ */
-
-#city.screen {
-  position: relative;
-  padding-top: 8px;
-  padding-bottom: 110px;
+/* SHOP */
+.shop-panel {
+  margin-top: 12px;
 }
 
-/* Панель міста */
-.city-panel {
-  position: relative;
-  margin-top: 8px;
-  padding: 14px 12px 18px;
-  border-radius: 18px;
-  background:
-    radial-gradient(circle at 0% 0%, rgba(0, 255, 255, 0.12), transparent 60%),
-    radial-gradient(circle at 100% 100%, rgba(255, 0, 150, 0.12), transparent 60%),
-    rgba(5, 9, 25, 0.96);
-  border: 1px solid rgba(0, 255, 255, 0.35);
-  box-shadow:
-    0 0 18px rgba(0, 0, 0, 0.9),
-    0 0 16px rgba(0, 255, 255, 0.2);
-  z-index: 1;
+.panel-tag-gold {
+  background: rgba(255, 214, 92, 0.15);
+  color: #ffe39a;
+  border-color: rgba(255, 214, 92, 0.6);
 }
 
-.city-header-row {
+.shop-stars-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  font-size: 0.8rem;
+  color: #dfe4ff;
+  margin-bottom: 8px;
 }
 
-.city-label {
+.shop-stars-value {
+  font-weight: 700;
+  color: #ffd65c;
+  text-shadow: 0 0 8px rgba(255, 214, 92, 0.8);
+}
+
+.shop-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shop-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 8px;
+  border-radius: 10px;
+  background: rgba(12, 15, 32, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.shop-item-info {
+  text-align: left;
+  max-width: 70%;
+}
+
+.shop-item-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.shop-item-desc {
+  font-size: 0.75rem;
+  color: #a8aed8;
+}
+
+.shop-buy-btn {
+  background: linear-gradient(135deg, #ffd65c, #ff9b3d);
+  border: none;
+  border-radius: 999px;
+  padding: 6px 10px;
   font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 1.6px;
-  color: #d4f8ff;
-  opacity: 0.9;
-}
-
-.city-tag {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #00f6ff, #8b5cff);
-  color: #020310;
   font-weight: 700;
-  box-shadow: 0 0 14px rgba(0, 255, 255, 0.85);
-}
-
-/* 3-колоночний грід */
-.city-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 6px;
-  overflow-x: hidden;
-}
-
-/* Будівля – мультяшний неон */
-.city-building {
-  position: relative;
-  padding: 10px 7px 12px;
-  border-radius: 16px;
-  background: #111424;
-  border: 2px solid rgba(0, 255, 255, 0.25);
-  box-shadow:
-    0 4px 0 #000,
-    0 0 12px rgba(0, 255, 255, 0.35),
-    inset 0 0 18px rgba(0, 255, 255, 0.15);
-  overflow: hidden;
-  transition: 0.2s ease;
-  animation: buildFloat 4.5s ease-in-out infinite;
-}
-
-@keyframes buildFloat {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-4px);
-  }
-}
-
-/* Glow у стилі Cartoon Neon */
-.city-building::before {
-  content: "";
-  position: absolute;
-  inset: -35%;
-  background:
-    radial-gradient(circle at 30% 0%, rgba(0, 255, 255, 0.35), transparent 70%),
-    radial-gradient(circle at 80% 100%, rgba(255, 0, 180, 0.25), transparent 70%);
-  filter: blur(12px);
-  z-index: 0;
-  opacity: 0.8;
-  pointer-events: none;
-}
-
-/* Hover / Active */
-.city-building:hover,
-.city-building:active {
-  transform: translateY(-6px) scale(1.03);
-  border-color: rgba(0, 255, 255, 0.85);
-  box-shadow:
-    0 8px 0 #000,
-    0 0 18px rgba(0, 255, 255, 0.8),
-    inset 0 0 22px rgba(0, 255, 255, 0.35);
-}
-
-/* Рідкість будівель – кольорові обводки */
-.city-rarity-common {
-  border-color: rgba(180, 180, 180, 0.7);
-}
-.city-rarity-rare {
-  border-color: rgba(0, 174, 255, 0.9);
-  box-shadow: 0 0 12px rgba(0, 174, 255, 0.45);
-}
-.city-rarity-epic {
-  border-color: rgba(168, 85, 247, 0.95);
-  box-shadow: 0 0 14px rgba(168, 85, 247, 0.55);
-}
-.city-rarity-legendary {
-  border-color: rgba(255, 196, 0, 0.98);
-  box-shadow: 0 0 18px rgba(255, 196, 0, 0.65);
-}
-
-/* Хедер будівлі */
-.city-building-header {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
-}
-
-.city-building-name {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #eaffff;
-  text-shadow: 0 0 4px #00f6ff;
-}
-
-/* тип Soft/Energy/Hybrid/Bonus */
-.city-building-type {
-  font-size: 0.6rem;
-  padding: 2px 6px;
-  border-radius: 999px;
-  background: rgba(0, 255, 255, 0.12);
-  border: 1px solid rgba(0, 255, 255, 0.4);
-  color: #dffcff;
-}
-
-/* Мультяшні вікна */
-.city-building-body {
-  position: relative;
-  z-index: 5;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3px;
-  margin-bottom: 6px;
-}
-
-.city-window {
-  width: 100%;
-  aspect-ratio: 1/1;
-  border-radius: 5px;
-  background: radial-gradient(circle at 40% 0%, #fff7a3, #ffc738);
-  box-shadow: 0 0 6px rgba(255, 199, 56, 0.9);
-  animation: windowBlinkCartoon 3s ease-in-out infinite;
-}
-
-@keyframes windowBlinkCartoon {
-  0%,
-  100% {
-    opacity: 0.95;
-  }
-  50% {
-    opacity: 0.55;
-  }
-}
-
-/* Футер будівлі */
-.city-building-footer {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.65rem;
-  color: #d7f9ff;
-}
-
-.city-building-level {
-  font-weight: 700;
-}
-
-.city-building-income {
-  opacity: 0.9;
-  color: #9beeff;
+  color: #271300;
+  box-shadow: 0 0 10px rgba(255, 214, 92, 0.7);
 }
