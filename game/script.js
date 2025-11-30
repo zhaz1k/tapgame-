@@ -8,9 +8,9 @@ const regenRate = 1;
 const regenInterval = 2000;
 let xp = 0;
 let level = 1;
-let currentUserId = "guest"; // за замовчуванням
+let currentUserId = "guest";
 
-// softCoins (невиводимі монетки для пасиву/карток)
+// softCoins (невиводимі монетки для пасиву/модулів)
 let softCoins = 0;
 
 // ⭐ зірки для донату
@@ -18,7 +18,7 @@ let stars = 0;
 
 // буст пасивного доходу
 let passiveBoostMultiplier = 1;
-let passiveBoostEndAt = 0; // timestamp мс, до якого активний буст
+let passiveBoostEndAt = 0;
 
 // максимальна кількість годин пасиву, яку можна накопичити за раз
 const MAX_PASSIVE_HOURS = 24;
@@ -65,19 +65,16 @@ if (tg) {
     const user = init.user;
     currentUserId = user.id?.toString() || "guest";
 
-    // імʼя / юзернейм
     if (usernameEl) {
       usernameEl.textContent = user.username
         ? `@${user.username}`
         : user.first_name || "Користувач";
     }
 
-    // аватар
     if (photoEl && user.photo_url) {
       photoEl.src = user.photo_url;
     }
 
-    // ID
     if (userIdEl) {
       userIdEl.textContent = `ID: ${user.id}`;
     }
@@ -108,7 +105,7 @@ function getPassiveTimeKey() {
   return `tapgame_passive_last_claim_${currentUserId}`;
 }
 
-// key для карток
+// key для модулів (карток)
 function getCardsKey() {
   return `tapgame_cards_${currentUserId}`;
 }
@@ -136,7 +133,6 @@ function loadGame() {
   try {
     const saved = localStorage.getItem(getSaveKey());
     if (!saved) {
-      // перший старт — дамо трохи зірок
       stars = 20;
       return;
     }
@@ -212,17 +208,11 @@ function updateEnergy(animated = false) {
   }
 }
 
-// оновлення відображення soft-монет
 function updateSoftUI() {
-  if (softBalanceEl) {
-    softBalanceEl.textContent = softCoins;
-  }
-  if (profileSoftCoinsEl) {
-    profileSoftCoinsEl.textContent = softCoins;
-  }
+  if (softBalanceEl) softBalanceEl.textContent = softCoins;
+  if (profileSoftCoinsEl) profileSoftCoinsEl.textContent = softCoins;
 }
 
-// оновлення відображення зірок
 function updateStarsUI() {
   if (starsBalanceEl) starsBalanceEl.textContent = stars;
   if (profileStarsEl) profileStarsEl.textContent = stars;
@@ -265,22 +255,20 @@ function spawnFlash() {
 }
 
 // ------------------------------
-// 🧠 PASIVE INCOME + CARDS
+// 🧠 PASIVE INCOME + MODULES (CARDS)
 // ------------------------------
 
-// 20 карток (common / rare / epic / legendary)
+// Конфіг модулів (20 штук)
 const CARD_DEFS = {
   // COMMON
   miner_1: {
     cardId: 'miner_1',
-    name: 'Майнер',
+    name: 'Базовий Майнер',
     description: 'Видобуває soft-монети щогодини.',
     type: 'soft_income',
     rarity: 'common',
     baseIncomePerHour: 80,
     incomePerLevel: 20,
-    baseEnergyPerDay: 0,
-    energyPerLevel: 0,
     baseBonusPercent: 0,
     bonusPercentPerLevel: 0,
     maxLevel: 10,
@@ -290,13 +278,11 @@ const CARD_DEFS = {
   vault_1: {
     cardId: 'vault_1',
     name: 'Склад монет',
-    description: 'Додає стабільний пасивний дохід.',
+    description: 'Тримає стабільний пасивний потік.',
     type: 'soft_income',
     rarity: 'common',
     baseIncomePerHour: 50,
     incomePerLevel: 15,
-    baseEnergyPerDay: 0,
-    energyPerLevel: 0,
     baseBonusPercent: 0,
     bonusPercentPerLevel: 0,
     maxLevel: 10,
@@ -306,13 +292,11 @@ const CARD_DEFS = {
   energy_lamp: {
     cardId: 'energy_lamp',
     name: 'Ліхтар енергії',
-    description: 'Додає енергію щодня (можна реалізувати пізніше).',
+    description: 'Додає енергію щодня (можна розширити пізніше).',
     type: 'energy_income',
     rarity: 'common',
     baseIncomePerHour: 0,
     incomePerLevel: 0,
-    baseEnergyPerDay: 10,
-    energyPerLevel: 5,
     baseBonusPercent: 0,
     bonusPercentPerLevel: 0,
     maxLevel: 10,
@@ -327,8 +311,6 @@ const CARD_DEFS = {
     rarity: 'common',
     baseIncomePerHour: 60,
     incomePerLevel: 18,
-    baseEnergyPerDay: 0,
-    energyPerLevel: 0,
     baseBonusPercent: 0,
     bonusPercentPerLevel: 0,
     maxLevel: 10,
@@ -343,8 +325,6 @@ const CARD_DEFS = {
     rarity: 'common',
     baseIncomePerHour: 0,
     incomePerLevel: 0,
-    baseEnergyPerDay: 0,
-    energyPerLevel: 0,
     baseBonusPercent: 1,
     bonusPercentPerLevel: 0.5,
     maxLevel: 8,
@@ -361,8 +341,6 @@ const CARD_DEFS = {
     rarity: 'rare',
     baseIncomePerHour: 200,
     incomePerLevel: 40,
-    baseEnergyPerDay: 0,
-    energyPerLevel: 0,
     baseBonusPercent: 0,
     bonusPercentPerLevel: 0,
     maxLevel: 12,
@@ -377,8 +355,6 @@ const CARD_DEFS = {
     rarity: 'rare',
     baseIncomePerHour: 0,
     incomePerLevel: 0,
-    baseEnergyPerDay: 30,
-    energyPerLevel: 8,
     baseBonusPercent: 0,
     bonusPercentPerLevel: 0,
     maxLevel: 12,
@@ -393,8 +369,6 @@ const CARD_DEFS = {
     rarity: 'rare',
     baseIncomePerHour: 150,
     incomePerLevel: 35,
-    baseEnergyPerDay: 0,
-    energyPerLevel: 0,
     baseBonusPercent: 0,
     bonusPercentPerLevel: 0,
     maxLevel: 12,
@@ -409,8 +383,6 @@ const CARD_DEFS = {
     rarity: 'rare',
     baseIncomePerHour: 100,
     incomePerLevel: 25,
-    baseEnergyPerDay: 5,
-    energyPerLevel: 2,
     baseBonusPercent: 0,
     bonusPercentPerLevel: 0,
     maxLevel: 10,
@@ -425,8 +397,6 @@ const CARD_DEFS = {
     rarity: 'rare',
     baseIncomePerHour: 0,
     incomePerLevel: 0,
-    baseEnergyPerDay: 0,
-    energyPerLevel: 0,
     baseBonusPercent: 1,
     bonusPercentPerLevel: 1,
     maxLevel: 8,
@@ -443,8 +413,6 @@ const CARD_DEFS = {
     rarity: 'epic',
     baseIncomePerHour: 400,
     incomePerLevel: 80,
-    baseEnergyPerDay: 0,
-    energyPerLevel: 0,
     baseBonusPercent: 0,
     bonusPercentPerLevel: 0,
     maxLevel: 15,
@@ -459,8 +427,6 @@ const CARD_DEFS = {
     rarity: 'epic',
     baseIncomePerHour: 0,
     incomePerLevel: 0,
-    baseEnergyPerDay: 80,
-    energyPerLevel: 15,
     baseBonusPercent: 0,
     bonusPercentPerLevel: 0,
     maxLevel: 15,
@@ -475,8 +441,6 @@ const CARD_DEFS = {
     rarity: 'epic',
     baseIncomePerHour: 0,
     incomePerLevel: 0,
-    baseEnergyPerDay: 0,
-    energyPerLevel: 0,
     baseBonusPercent: 3,
     bonusPercentPerLevel: 1.2,
     maxLevel: 12,
@@ -491,8 +455,6 @@ const CARD_DEFS = {
     rarity: 'epic',
     baseIncomePerHour: 500,
     incomePerLevel: 90,
-    baseEnergyPerDay: 0,
-    energyPerLevel: 0,
     baseBonusPercent: 0,
     bonusPercentPerLevel: 0,
     maxLevel: 15,
@@ -502,13 +464,11 @@ const CARD_DEFS = {
   neon_tower: {
     cardId: 'neon_tower',
     name: 'Неоновий хмарочос',
-    description: 'Великий hybrid: soft + енергія.',
+    description: 'Hybrid: soft + енергія.',
     type: 'hybrid',
     rarity: 'epic',
     baseIncomePerHour: 250,
     incomePerLevel: 60,
-    baseEnergyPerDay: 20,
-    energyPerLevel: 5,
     baseBonusPercent: 0,
     bonusPercentPerLevel: 0,
     maxLevel: 15,
@@ -525,8 +485,6 @@ const CARD_DEFS = {
     rarity: 'legendary',
     baseIncomePerHour: 1000,
     incomePerLevel: 200,
-    baseEnergyPerDay: 0,
-    energyPerLevel: 0,
     baseBonusPercent: 0,
     bonusPercentPerLevel: 0,
     maxLevel: 20,
@@ -541,8 +499,6 @@ const CARD_DEFS = {
     rarity: 'legendary',
     baseIncomePerHour: 0,
     incomePerLevel: 0,
-    baseEnergyPerDay: 150,
-    energyPerLevel: 20,
     baseBonusPercent: 0,
     bonusPercentPerLevel: 0,
     maxLevel: 20,
@@ -557,8 +513,6 @@ const CARD_DEFS = {
     rarity: 'legendary',
     baseIncomePerHour: 0,
     incomePerLevel: 0,
-    baseEnergyPerDay: 0,
-    energyPerLevel: 0,
     baseBonusPercent: 5,
     bonusPercentPerLevel: 2,
     maxLevel: 15,
@@ -573,8 +527,6 @@ const CARD_DEFS = {
     rarity: 'legendary',
     baseIncomePerHour: 1500,
     incomePerLevel: 250,
-    baseEnergyPerDay: 0,
-    energyPerLevel: 0,
     baseBonusPercent: 0,
     bonusPercentPerLevel: 0,
     maxLevel: 20,
@@ -589,8 +541,6 @@ const CARD_DEFS = {
     rarity: 'legendary',
     baseIncomePerHour: 800,
     incomePerLevel: 150,
-    baseEnergyPerDay: 40,
-    energyPerLevel: 8,
     baseBonusPercent: 0,
     bonusPercentPerLevel: 0,
     maxLevel: 20,
@@ -602,7 +552,6 @@ const CARD_DEFS = {
 // масив карток користувача
 let userCards = [];
 
-// завантаження карток із localStorage
 function loadUserCards() {
   try {
     const raw = localStorage.getItem(getCardsKey());
@@ -622,7 +571,7 @@ function saveUserCards() {
   }
 }
 
-// ініціалізація карток: дозаливаємо всі, яких ще немає
+// ініціалізація карток: додаємо всі, яких ще немає
 function initDefaultCardsIfNeeded() {
   userCards = loadUserCards() || [];
 
@@ -700,7 +649,6 @@ function calcPassiveState() {
   if (hours < 0) hours = 0;
   if (hours > MAX_PASSIVE_HOURS) hours = MAX_PASSIVE_HOURS;
 
-  // активний буст пасиву (x2 / x5 / VIP)
   let activeBoost = 1;
   if (passiveBoostEndAt && now < passiveBoostEndAt && passiveBoostMultiplier > 1) {
     activeBoost = passiveBoostMultiplier;
@@ -764,8 +712,7 @@ function upgradeCard(cardId) {
   saveUserCards();
   updateSoftUI();
   updatePassiveUI();
-  renderCardsList();
-  renderCity();
+  renderLabList();
 }
 
 // оновлення UI панелі пасиву
@@ -785,7 +732,6 @@ function updatePassiveUI() {
     elLast.textContent = d.toLocaleString();
   }
 
-  // статус бусту
   if (passiveBoostStatusEl) {
     const now = Date.now();
     if (passiveBoostEndAt && now < passiveBoostEndAt && passiveBoostMultiplier > 1) {
@@ -796,75 +742,19 @@ function updatePassiveUI() {
     }
   }
 
-  // оновлюємо soft та зірки
   updateSoftUI();
   updateStarsUI();
 }
 
-// рендер списку карток
-function renderCardsList() {
-  const container = document.getElementById("cards-list");
+// LAB — рендер модулів
+function renderLabList() {
+  const container = document.getElementById("lab-list");
   if (!container) return;
 
   container.innerHTML = "";
 
-  userCards.forEach(uc => {
-    const def = CARD_DEFS[uc.cardId];
-    if (!def) return;
-
-    const { softIncomePerHour, bonusPercent } = calcCardIncome(def, uc.level);
-    const currentLevel = uc.level;
-
-    const cost = Math.floor(
-      def.baseUpgradeCostSoft * Math.pow(def.upgradeCostMultiplier, currentLevel - 1)
-    );
-
-    const div = document.createElement("div");
-    div.className = "card-item";
-
-    div.innerHTML = `
-      <div class="card-header">
-        <div class="card-title">${def.name}</div>
-        <div class="card-rarity card-rarity-${def.rarity}">${def.rarity}</div>
-      </div>
-      <div class="card-body">
-        <div class="card-level">Рівень: <span>${uc.level}</span> / ${def.maxLevel}</div>
-        <div class="card-desc">${def.description}</div>
-        <div class="card-stats">
-          ${softIncomePerHour > 0 ? `<div>Пасив: +${softIncomePerHour}/год</div>` : ""}
-          ${bonusPercent > 0 ? `<div>Бонус: +${bonusPercent.toFixed(1)}%</div>` : ""}
-        </div>
-      </div>
-      <div class="card-footer">
-        <button class="btn-upgrade" data-card-id="${def.cardId}">
-          Покращити за ${cost} soft
-        </button>
-      </div>
-    `;
-
-    container.appendChild(div);
-  });
-
-  // обробники натискань на "Покращити"
-  container.querySelectorAll(".btn-upgrade").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const cardId = btn.getAttribute("data-card-id");
-      upgradeCard(cardId);
-    });
-  });
-}
-
-// 🏙 рендер NEON CITY з карток (3 колонки)
-function renderCity() {
-  const cityGrid = document.getElementById("city-grid");
-  if (!cityGrid) return;
-
-  cityGrid.innerHTML = "";
-
-  // Мапа для порядку раритетів
   const rarityOrder = { legendary: 0, epic: 1, rare: 2, common: 3 };
 
-  // Сортуємо картки: спочатку більш рідкісні та жирні
   const sorted = [...userCards].sort((a, b) => {
     const defA = CARD_DEFS[a.cardId];
     const defB = CARD_DEFS[b.cardId];
@@ -872,7 +762,6 @@ function renderCity() {
 
     const rA = rarityOrder[defA.rarity] ?? 99;
     const rB = rarityOrder[defB.rarity] ?? 99;
-
     if (rA !== rB) return rA - rB;
 
     const incA = calcCardIncome(defA, a.level).softIncomePerHour;
@@ -880,65 +769,104 @@ function renderCity() {
     return incB - incA;
   });
 
+  const maxSoftReference = 1500;
+
   sorted.forEach(uc => {
     const def = CARD_DEFS[uc.cardId];
     if (!def) return;
 
-    const { softIncomePerHour } = calcCardIncome(def, uc.level);
+    const { softIncomePerHour, bonusPercent } = calcCardIncome(def, uc.level);
 
     let typeLabel = "";
+    let iconEmoji = "🏙";
+
     if (def.type === "soft_income") {
       typeLabel = "Soft";
+      iconEmoji = "🏭";
     } else if (def.type === "energy_income") {
       typeLabel = "Energy";
+      iconEmoji = "⚡";
     } else if (def.type === "bonus") {
       typeLabel = "Bonus";
+      iconEmoji = "🎛";
     } else if (def.type === "hybrid") {
       typeLabel = "Hybrid";
+      iconEmoji = "🌀";
     }
 
-    const building = document.createElement("div");
-    building.className = `city-building city-rarity-${def.rarity}`;
+    const currentLevel = uc.level;
+    const cost = Math.floor(
+      def.baseUpgradeCostSoft * Math.pow(def.upgradeCostMultiplier, currentLevel - 1)
+    );
 
-    const header = document.createElement("div");
-    header.className = "city-building-header";
-    header.innerHTML = `
-      <div class="city-building-name">${def.name}</div>
-      <div class="city-building-type">${typeLabel}</div>
-    `;
+    const progressPercent =
+      softIncomePerHour <= 0
+        ? 0
+        : Math.min(100, Math.round((softIncomePerHour / maxSoftReference) * 100));
 
-    const body = document.createElement("div");
-    body.className = "city-building-body";
+    const item = document.createElement("div");
+    item.className = "lab-item";
 
-    const windowsCount = 6;
-    for (let i = 0; i < windowsCount; i++) {
-      const w = document.createElement("div");
-      w.className = "city-window";
-      body.appendChild(w);
-    }
+    item.innerHTML = `
+      <div class="lab-left">
+        <div class="lab-icon">${iconEmoji}</div>
+      </div>
 
-    const footer = document.createElement("div");
-    footer.className = "city-building-footer";
-    footer.innerHTML = `
-      <div class="city-building-level">Lv.${uc.level}</div>
-      <div class="city-building-income">
-        ${softIncomePerHour > 0 ? `+${softIncomePerHour}/год` : ""}
+      <div class="lab-main">
+        <div class="lab-header-row">
+          <div class="lab-title">${def.name}</div>
+          <div class="lab-pills">
+            <span class="lab-pill-type">${typeLabel}</span>
+            <span class="lab-pill-rarity lab-rarity-${def.rarity}">
+              ${def.rarity}
+            </span>
+          </div>
+        </div>
+
+        <div class="lab-desc">${def.description}</div>
+
+        <div class="lab-stats-row">
+          <span class="lab-soft">
+            ${softIncomePerHour > 0 ? `+${softIncomePerHour}/год` : (bonusPercent > 0 ? `+${bonusPercent.toFixed(1)}%` : "—")}
+          </span>
+          <span class="lab-level">Lv.${uc.level} / ${def.maxLevel}</span>
+        </div>
+
+        <div class="lab-progress">
+          <div class="lab-progress-bar" style="width: ${progressPercent}%;"></div>
+        </div>
+
+        <div class="lab-footer">
+          <button class="lab-upgrade-btn" data-card-id="${def.cardId}">
+            Покращити за ${cost} soft
+          </button>
+        </div>
       </div>
     `;
 
-    building.appendChild(header);
-    building.appendChild(body);
-    building.appendChild(footer);
+    const btn = item.querySelector(".lab-upgrade-btn");
+    if (btn) {
+      if (uc.level >= def.maxLevel) {
+        btn.textContent = "Максимальний рівень";
+        btn.classList.add("disabled");
+      } else if (softCoins < cost) {
+        btn.classList.add("disabled");
+      }
 
-    cityGrid.appendChild(building);
+      btn.addEventListener("click", () => {
+        if (uc.level >= def.maxLevel) return;
+        upgradeCard(def.cardId);
+      });
+    }
+
+    container.appendChild(item);
   });
 }
 
 // ініціалізація пасивної системи
 function initPassiveSystem() {
   initDefaultCardsIfNeeded();
-  renderCardsList();
-  renderCity();
+  renderLabList();
   updatePassiveUI();
 
   const btnClaim = document.getElementById("btn-claim-passive");
@@ -948,7 +876,6 @@ function initPassiveSystem() {
     });
   }
 
-  // періодично оновлюємо панель пасиву
   setInterval(updatePassiveUI, 5000);
 }
 
@@ -1002,8 +929,7 @@ function giveRandomCardFromBox() {
     softCoins += 500;
   }
   saveUserCards();
-  renderCardsList();
-  renderCity();
+  renderLabList();
 }
 
 function buyProduct(productId) {
@@ -1031,8 +957,7 @@ function buyProduct(productId) {
   saveGame();
   updateStarsUI();
   updatePassiveUI();
-  renderCardsList();
-  renderCity();
+  renderLabList();
 }
 
 function initShop() {
@@ -1044,14 +969,12 @@ function initShop() {
     });
   });
 
-  // 👉 поповнення зірок
   const btnBuyStars = document.getElementById("btn-buy-stars");
   if (btnBuyStars) {
     btnBuyStars.addEventListener("click", () => {
       if (tg) {
         tg.openTelegramLink("https://t.me/donet_app_bot?start=buy_stars");
       } else {
-        // DEV-режим у браузері: даємо тестові зірки
         stars += 10;
         saveGame();
         updateStarsUI();
@@ -1120,4 +1043,4 @@ updateSoftUI();
 updateStarsUI();
 initPassiveSystem();
 initShop();
-renderCity();
+renderLabList();
