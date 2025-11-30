@@ -1,37 +1,25 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  />
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TapGame</title>
-
-  <!-- Стилі гри -->
-  <link rel="stylesheet" href="style.css" />
-
-  <!-- Bootstrap Icons для нижнього меню -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
-    rel="stylesheet"
-  />
-
-  <!-- Telegram WebApp -->
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 
 <body>
   <div class="app">
+
     <!-- 🔝 Верхній бар з профілем і балансом -->
     <header class="top-bar">
       <div class="top-left">
-        <img
-          id="userPhoto"
-          class="top-avatar"
-          src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-          alt="avatar"
-        />
+        <img id="userPhoto"
+             class="top-avatar"
+             src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+             alt="avatar">
         <div class="top-user">
           <div id="username" class="top-username">Завантаження...</div>
           <div id="userId" class="top-userid">ID: —</div>
@@ -58,8 +46,10 @@
 
     <!-- 📱 Екрани -->
     <main class="screens">
-      <!-- 🏠 Головна -->
+
+      <!-- 🏠 Home (Tap) -->
       <section class="screen active" id="home">
+
         <!-- Soft монети -->
         <div class="soft-balance-row">
           <span class="soft-label">Soft монети:</span>
@@ -101,23 +91,24 @@
             Boost не активний
           </div>
         </div>
+
       </section>
 
-      <!-- 🏙 Neon City (3 колонки, idle-стиль) -->
-      <section class="screen" id="city">
-        <h2 class="screen-title">🏙 Neon City</h2>
+      <!-- ⚙️ LAB — модулі пасивного доходу -->
+      <section class="screen" id="lab">
+        <h2 class="screen-title">⚙️ Neon Lab</h2>
         <p class="screen-subtitle">
-          Твоє неонове місто з будівель, які генерують пасивний дохід.
+          Підключай модулі, прокачуй рівні й будуй свій пасивний дохід.
         </p>
 
-        <div class="city-panel">
-          <div class="city-header-row">
-            <span class="city-label">Місто фарму</span>
-            <span class="city-tag">LIVE PASSIVE</span>
+        <div class="panel lab-panel">
+          <div class="panel-header-row">
+            <h2>Модулі пасиву</h2>
+            <span class="panel-tag panel-tag-purple">IDLE</span>
           </div>
 
-          <div class="city-grid" id="city-grid">
-            <!-- JS намалює будівлі з карток (3 колонки) -->
+          <div id="lab-list" class="lab-list">
+            <!-- JS намалює модулі -->
           </div>
         </div>
       </section>
@@ -125,9 +116,7 @@
       <!-- 🎯 Завдання -->
       <section class="screen" id="tasks">
         <h2 class="screen-title">🎯 Завдання</h2>
-        <p class="screen-subtitle">
-          Виконуй таски і отримуй монети та boost’и.
-        </p>
+        <p class="screen-subtitle">Виконуй таски і отримуй монети та boost’и</p>
 
         <ul class="task-list">
           <li class="task-card">
@@ -159,14 +148,12 @@
       <!-- 🚀 Airdrop -->
       <section class="screen" id="airdrop">
         <h2 class="screen-title">🚀 Airdrop</h2>
-        <p class="screen-subtitle">
-          Готуйся, скоро тут буде основний роздачний движ.
-        </p>
+        <p class="screen-subtitle">Готуйся, скоро тут буде основний роздачний движ</p>
 
         <div class="panel airdrop-panel">
           <p class="airdrop-text">
-            Збирай монети, качай картки та заробляй пасив — чим активніший ти
-            зараз, тим більша нагорода буде під час офіційного Airdrop.
+            Збирай монети, качай модулі в Lab та заробляй пасив — чим активніший ти зараз,
+            тим більша нагорода буде під час офіційного Airdrop.
           </p>
           <ul class="airdrop-list">
             <li>✅ Щодня заходь у гру</li>
@@ -188,89 +175,53 @@
             <span class="shop-stars-value" id="shop-stars">0</span>
           </div>
 
-          <button id="btn-buy-stars" class="btn-secondary full-width">
+          <button id="btn-buy-stars" class="btn-primary full-width">
             Поповнити зірки
           </button>
-          <p class="shop-hint">Оплата йде через Telegram Stars ⭐</p>
+          <p class="shop-hint">
+            Оплата йде через Telegram Stars ⭐
+          </p>
 
           <div class="shop-list">
             <div class="shop-item">
               <div class="shop-item-info">
                 <div class="shop-item-title">⚡ Energy Boost +250</div>
-                <div class="shop-item-desc">
-                  Миттєво додає 250 енергії (але не більше максимуму).
-                </div>
+                <div class="shop-item-desc">Миттєво додає 250 енергії (але не більше максимуму).</div>
               </div>
-              <button class="shop-buy-btn" data-product-id="energy_250">
-                10 ⭐
-              </button>
+              <button class="shop-buy-btn" data-product-id="energy_250">10 ⭐</button>
             </div>
 
             <div class="shop-item">
               <div class="shop-item-info">
                 <div class="shop-item-title">🌀 x2 Пасив на 1 год</div>
-                <div class="shop-item-desc">
-                  Подвоює пасивний дохід на 60 хвилин.
-                </div>
+                <div class="shop-item-desc">Подвоює пасивний дохід на 60 хвилин.</div>
               </div>
-              <button class="shop-buy-btn" data-product-id="passive_x2_1h">
-                20 ⭐
-              </button>
+              <button class="shop-buy-btn" data-product-id="passive_x2_1h">20 ⭐</button>
             </div>
 
             <div class="shop-item">
               <div class="shop-item-info">
                 <div class="shop-item-title">🔥 x5 Пасив на 30 хв</div>
-                <div class="shop-item-desc">
-                  Серйозний буст для хайпового фарму.
-                </div>
+                <div class="shop-item-desc">Серйозний буст для хайпового фарму.</div>
               </div>
-              <button class="shop-buy-btn" data-product-id="passive_x5_30m">
-                35 ⭐
-              </button>
+              <button class="shop-buy-btn" data-product-id="passive_x5_30m">35 ⭐</button>
             </div>
 
             <div class="shop-item">
               <div class="shop-item-info">
                 <div class="shop-item-title">👑 VIP 24h</div>
-                <div class="shop-item-desc">
-                  +20% до всього пасиву на 24 години.
-                </div>
+                <div class="shop-item-desc">+20% до всього пасиву на 24 години.</div>
               </div>
-              <button class="shop-buy-btn" data-product-id="vip_24h">
-                50 ⭐
-              </button>
+              <button class="shop-buy-btn" data-product-id="vip_24h">50 ⭐</button>
             </div>
 
             <div class="shop-item">
               <div class="shop-item-info">
                 <div class="shop-item-title">🎁 Mystery Box</div>
-                <div class="shop-item-desc">
-                  Випадкова картка або +рівень існуючої.
-                </div>
+                <div class="shop-item-desc">Випадковий level-up одного з модулів.</div>
               </div>
-              <button class="shop-buy-btn" data-product-id="box_random_card">
-                40 ⭐
-              </button>
+              <button class="shop-buy-btn" data-product-id="box_random_card">40 ⭐</button>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 🃏 Картки -->
-      <section class="screen" id="cards">
-        <h2 class="screen-title">🃏 Картки пасивного доходу</h2>
-        <p class="screen-subtitle">
-          Прокачуй картки, щоб збільшувати свій пасивний дохід та бонуси.
-        </p>
-
-        <div class="panel cards-panel">
-          <div class="panel-header-row">
-            <h2>Картки</h2>
-            <span class="panel-tag panel-tag-purple">UPGRADE ⬆️</span>
-          </div>
-          <div id="cards-list" class="cards-list">
-            <!-- JS сюди намалює картки -->
           </div>
         </div>
       </section>
@@ -280,15 +231,12 @@
         <h2 class="screen-title">👤 Профіль</h2>
 
         <div class="tg-profile">
-          <!-- окремі id, щоб не дублювати з top-bar -->
-          <img
-            id="profilePhoto"
-            class="tg-avatar"
-            src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-            alt="avatar"
-          />
-          <p id="profileUsername">Завантаження...</p>
-          <p id="profileUserId">ID: —</p>
+          <img id="userPhoto"
+               class="tg-avatar"
+               src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+               alt="avatar">
+          <p id="username">Завантаження...</p>
+          <p id="userId"></p>
         </div>
 
         <div class="profile-stats">
@@ -298,18 +246,20 @@
           <p>🪙 Soft монети: <span id="profileSoftCoins">0</span></p>
           <p>⭐ Stars: <span id="profileStars">0</span></p>
         </div>
+
       </section>
+
     </main>
 
     <!-- 🧭 Нижнє меню -->
     <nav class="bottom-nav">
       <button data-screen="home" class="active">
-        <i class="bi bi-house"></i>
-        <span>Home</span>
+        <i class="bi bi-bullseye"></i>
+        <span>Tap</span>
       </button>
-      <button data-screen="city">
-        <i class="bi bi-building"></i>
-        <span>City</span>
+      <button data-screen="lab">
+        <i class="bi bi-cpu"></i>
+        <span>Lab</span>
       </button>
       <button data-screen="tasks">
         <i class="bi bi-list-task"></i>
@@ -319,18 +269,14 @@
         <i class="bi bi-rocket-takeoff"></i>
         <span>Airdrop</span>
       </button>
-      <button data-screen="cards">
-        <i class="bi bi-collection"></i>
-        <span>Cards</span>
-      </button>
       <button data-screen="profile">
         <i class="bi bi-person"></i>
         <span>Profile</span>
       </button>
     </nav>
+
   </div>
 
-  <!-- Логіка гри -->
   <script src="script.js"></script>
 </body>
 </html>
